@@ -1,0 +1,14 @@
+function markAttendance() {
+  const name = document.getElementById("nameInput").value;
+  if (name.trim() === "") {
+    alert("দয়া করে একটি নাম লিখুন!");
+    return;
+  }
+
+  const list = document.getElementById("attendanceList");
+  const item = document.createElement("li");
+  item.textContent = `${name} - ✅ উপস্থিত`;
+  list.appendChild(item);
+
+  document.getElementById("nameInput").value = "";
+}
