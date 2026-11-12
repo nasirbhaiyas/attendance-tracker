@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monthly Duty Count Sheet</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- HTML2PDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* Smooth theme transitions */
+    body {
+      transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ========================================================
+       EXECUTIVE CORPORATE LIGHT THEME
+       ======================================================== */
+    body.light-theme {
+      background-color: #f1f5f9 !important;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.08) 0px, transparent 40%),
+        radial-gradient(at 100% 0%, rgba(15, 23, 42, 0.06) 0px, transparent 45%),
+        radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #0f172a !important;
+    }
+    body.light-theme .glass-panel {
+      background: rgba(255, 255, 255, 0.92) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
+    }
+    body.light-theme .glass-card {
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    body.light-theme .table-row-hover {
+      transition: background-color 0.2s ease-in-out;
+    }
+    body.light-theme .table-row-hover:hover {
+      background-color: rgba(241, 245, 249, 0.9) !important;
+    }
+    body.light-theme .sunday-row-highlight {
+      background-color: rgba(254, 242, 242, 0.75);
+    }
+    body.light-theme select {
+      color: #0f172a !important;
+    }
+    body.light-theme select option {
+      background: #ffffff;
+      color: #0f172a;
+    }
+    body.light-theme .dashboard-interactive-panel {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08) !important;
+    }
+    body.light-theme .dashboard-interactive-panel h2,
+    body.light-theme .dashboard-interactive-panel #statNetHours {
+      color: #0f172a !important;
+    }
+    body.light-theme .sub-card-box {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+    }
+    body.light-theme .sub-card-box span.text-white {
+      color: #0f172a !important;
+    }
+    body.light-theme .donut-chart #donutPercentage {
+      color: #0f172a !important;
+    }
+    body.light-theme .donut-chart > div {
+      background: #ffffff !important;
+    }
+
+    /* ========================================================
+       PREMIUM DARK THEME
+       ======================================================== */
+    body.dark, .dark body {
+      background: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%) !important;
+      color: #f8fafc !important;
+      background-attachment: fixed;
+    }
+    body.dark .glass-panel, .dark body .glass-panel {
+      background: rgba(15, 23, 42, 0.75) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+    }
+    body.dark .glass-card, .dark body .glass-card {
+      background: rgba(30, 41, 59, 0.6) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f8fafc;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    body.dark .table-row-hover:hover, .dark body .table-row-hover:hover {
+      background-color: rgba(51, 65, 85, 0.5) !important;
+    }
+    body.dark .sunday-row-highlight, .dark body .sunday-row-highlight {
+      background-color: rgba(136, 19, 55, 0.2);
+    }
+    body.dark select, .dark body select {
+      color: #f8fafc !important;
+    }
+    body.dark select option, .dark body select option {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    .note-shift-highlight {
+      border: 1.5px solid #e11d48 !important;
+      color: #be123c !important;
+      background-color: #ffe4e6 !important;
+      font-weight: 800 !important;
+    }
+    body.dark .note-shift-highlight {
+      border-color: #f43f5e !important;
+      color: #fda4af !important;
+      background-color: rgba(159, 18, 57, 0.4) !important;
+    }
+
+    .modal-overlay {
+      background: rgba(2, 6, 23, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+      }
+      html, body { 
+        background: #ffffff !important; 
+        color: #000000 !important; 
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        font-size: 10px !important;
+      }
+      .no-print { display: none !important; }
+      .glass-panel, .glass-card, .dashboard-interactive-panel, .sub-card-box {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+      }
+      header {
+        position: static !important;
+        box-shadow: none !important;
+        border-bottom: 2px solid #0f172a !important;
+        margin-bottom: 10px !important;
+        padding: 4px 8px !important;
+      }
+      #mainAppContainer {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        max-width: 100% !important;
+      }
+      #stickyProfileSection, #interactiveDashboard, #upcomingHolidaySection {
+        page-break-inside: avoid;
+        margin-bottom: 8px !important;
+      }
+      #dutyLogsSection {
+        page-break-before: auto;
+        page-break-inside: auto;
+        padding: 10px !important;
+      }
+      .rounded-2xl, .rounded-3xl {
+        border-radius: 6px !important;
+      }
+      .overflow-x-auto {
+        overflow: visible !important;
+      }
+      table {
+        width: 100% !important;
+        font-size: 9px !important;
+        border-collapse: collapse !important;
+        page-break-inside: auto;
+      }
+      tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+      }
+      th, td {
+        padding: 3px 4px !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #cbd5e1 !important;
+        line-height: 1.1 !important;
+      }
+      input {
+        border: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        height: auto !important;
+      }
+      .donut-chart {
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+    
+    .donut-chart {
+      background: conic-gradient(
+        #10b981 var(--present-deg, 0deg),
+        #6366f1 var(--present-deg, 0deg) var(--weekend-deg, 0deg),
+        #f43f5e var(--weekend-deg, 0deg) var(--absent-deg, 0deg),
+        #cbd5e1 var(--absent-deg, 0deg)
+      );
+    }
+    body.dark .donut-chart {
+      background: conic-gradient(
+        #34d399 var(--present-deg, 0deg),
+        #818cf8 var(--present-deg, 0deg) var(--weekend-deg, 0deg),
+        #fb7185 var(--weekend-deg, 0deg) var(--absent-deg, 0deg),
+        #334155 var(--absent-deg, 0deg)
+      );
+    }
+
+    .dashboard-interactive-panel {
+      position: relative;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.6) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+    .sub-card-box {
+      background: rgba(4, 7, 17, 0.55) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .sub-card-box:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .sub-card-box.theme-present:hover {
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+    }
+    .sub-card-box.theme-weekend:hover {
+      border-color: rgba(99, 102, 241, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.25);
+    }
+    .sub-card-box.theme-shifts:hover {
+      border-color: rgba(168, 85, 247, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.25);
+    }
+    .sub-card-box.theme-grace:hover {
+      border-color: rgba(20, 184, 166, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(20, 184, 166, 0.25);
+    }
+    .sub-card-box.theme-extra:hover {
+      border-color: rgba(245, 158, 11, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.25);
+    }
+    .sub-card-box.theme-pay:hover {
+      border-color: rgba(6, 182, 212, 0.5) !important;
+      box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.25);
+    }
+
+    #celebrationOverlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    #celebrationOverlay.active {
+      opacity: 1;
+    }
+
+    .celebration-particle {
+      position: absolute;
+      bottom: -60px;
+      font-size: 1.8rem;
+      user-select: none;
+      animation: floatUpAndRotate 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      filter: drop-shadow(0 4px 10px rgba(255, 255, 255, 0.4));
+    }
+
+    @keyframes floatUpAndRotate {
+      0% {
+        transform: translateY(0) scale(0.5) rotate(0deg);
+        opacity: 0.1;
+      }
+      20% {
+        opacity: 1;
+        transform: translateY(-20vh) scale(1.2) rotate(45deg);
+      }
+      80% {
+        opacity: 0.9;
+        transform: translateY(-80vh) scale(1) rotate(270deg);
+      }
+      100% {
+        transform: translateY(-115vh) scale(0.8) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .celebration-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .celebration-glow.active {
+      opacity: 1;
+    }
+
+    .meta-chip-box {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .meta-chip-box:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
+
+    .custom-date-dropdown {
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .custom-date-dropdown:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 4px 15px -2px rgba(99, 102, 241, 0.35);
+      border-color: rgba(99, 102, 241, 0.6) !important;
+    }
+
+    .dropdown-group:hover .dropdown-menu-box {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) scale(1) !important;
+    }
+
+    .work-option-item {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .work-option-item:hover {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15)) !important;
+      transform: translateX(4px);
+    }
+    .work-option-item.selected-active {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2)) !important;
+      border-left: 3px solid #10b981 !important;
+    }
+
+    /* Smart Liquid Wave Hydration Fill */
+    .liquid-wave-fill {
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.14) 0%, rgba(20, 184, 166, 0.22) 50%, rgba(6, 182, 212, 0.14) 100%);
+      background-size: 200% 100%;
+      animation: waveShimmer 3.5s ease-in-out infinite;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes waveShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-6 lg:p-8 min-h-screen">
+
+  <!-- Celebration Overlay Canvas Container -->
+  <div id="celebrationOverlay"></div>
+  <div id="celebrationGlow" class="celebration-glow"></div>
+
+  <!-- ================= 0. FULL-WIDTH SYSTEM HEADER ================= -->
+  <header class="w-full fixed top-0 left-0 right-0 z-50 glass-panel border-b border-slate-200/80 dark:border-slate-800/80 shadow-md backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Title with Smart 'N' Logo -->
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center text-white text-sm sm:text-base font-black shadow-md shadow-indigo-500/30 shrink-0 border border-white/20 tracking-tighter ring-1 ring-indigo-400/40">
+          <span class="drop-shadow-sm font-black italic">N</span>
+        </div>
+        <div>
+          <h1 class="text-xs sm:text-sm font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+            NASIR BHAIYA'S Workplaces
+          </h1>
+          <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+            Full-Stack Engineer & Operations Tracker
+          </p>
+        </div>
+      </div>
+
+      <!-- CENTER: WORK PURPOSE DROPDOWN -->
+      <div class="relative dropdown-group py-1">
+        <button id="workPurposeBtn" type="button" 
+                class="glass-card flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 border border-indigo-500/40 transition-all duration-200 cursor-pointer shadow-xs hover:bg-slate-200/80 dark:hover:bg-slate-800/80">
+          <i class="fa-solid fa-briefcase text-indigo-500 text-[10px]"></i>
+          <span id="selectedWorkLabel">WORK PURPOSE</span>
+          <i class="fa-solid fa-chevron-down text-[9px] text-indigo-400 transition-transform duration-300 group-hover:rotate-180"></i>
+        </button>
+
+        <!-- Dropdown Menu Box -->
+        <div class="dropdown-menu-box absolute left-1/2 -translate-x-1/2 top-full mt-1 w-52 opacity-0 invisible transition-all duration-300 transform translate-y-2 scale-95 glass-panel rounded-2xl p-2 shadow-2xl border border-indigo-500/30 backdrop-blur-2xl z-50 space-y-1">
+          <div class="px-2.5 py-1 border-b border-slate-200/50 dark:border-slate-800/50 text-[9px] font-black uppercase tracking-widest text-indigo-400">
+            Select Workspace Action
+          </div>
+          
+          <a href="https://nasirbhaiyas.github.io/-portfolio/" data-link="https://nasirbhaiyas.github.io/-portfolio/" onclick="handleWorkSelect(event, this, 'NASIR PORTFOLIO')" 
+             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-[10px] text-indigo-400"></i> NASIR PORTFOLIO</span>
+            <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
+          </a>
+
+          <a href="#" data-link="LINK_2_HERE" onclick="handleWorkSelect(event, this, 'Option 2')" 
+             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-link text-[10px] text-indigo-400"></i> Option 2</span>
+            <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
+          </a>
+
+          <a href="#" data-link="LINK_3_HERE" onclick="handleWorkSelect(event, this, 'Option 3')" 
+             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-link text-[10px] text-indigo-400"></i> Option 3</span>
+            <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
+          </a>
+
+          <a href="#" data-link="LINK_4_HERE" onclick="handleWorkSelect(event, this, 'Option 4')" 
+             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-link text-[10px] text-indigo-400"></i> Option 4</span>
+            <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
+          </a>
+
+          <a href="#" data-link="LINK_5_HERE" onclick="handleWorkSelect(event, this, 'Option 5')" 
+             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-link text-[10px] text-indigo-400"></i> Option 5</span>
+            <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Day/Night Theme Switcher -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="themeToggleBtn" type="button" 
+                class="glass-card flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black transition cursor-pointer shadow-xs border border-slate-200 dark:border-slate-700/80 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:scale-105 shrink-0"
+                title="Toggle Day/Night Theme">
+          <span id="themeIcon" class="text-amber-400 text-xs"><i class="fa-solid fa-moon"></i></span>
+          <span id="themeLabel" class="text-[10px] font-black uppercase tracking-wide text-slate-800 dark:text-slate-100">Dark</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+  
+  <!-- Main Layout Container -->
+  <div id="mainAppContainer" class="max-w-6xl mx-auto space-y-6 pt-12 sm:pt-14">
+
+    <!-- ================= 1. EMPLOYEE PROFILE & WORKPLACE HUB ================= -->
+    <div id="stickyProfileSection" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      
+      <!-- LEFT BOX: Main Profile Banner & Info -->
+      <section class="lg:col-span-2 glass-panel rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div id="coverBannerBg" class="relative h-32 sm:h-40 w-full bg-slate-900 overflow-hidden flex items-center justify-center bg-cover bg-center transition-all duration-300">
+          <button id="openProfileModalBtn" type="button" 
+                  class="absolute top-4 right-4 z-20 no-print bg-white/95 hover:bg-white text-slate-700 text-[11px] sm:text-xs font-bold px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center gap-1.5 transition shadow-md cursor-pointer border border-slate-200">
+            <i class="fa-solid fa-pen text-[10px] sm:text-xs text-indigo-500"></i>
+            <span>Edit Profile</span>
+          </button>
+        </div>
+
+        <div id="profileDetailsWrapper" class="px-5 sm:px-6 pb-5 pt-0 transition-all duration-300">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4 sm:gap-5 z-20">
+              <div id="profileAvatarContainer" class="relative shrink-0 -mt-10 sm:-mt-14 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white dark:border-slate-900 overflow-hidden shadow-xl bg-slate-800 flex items-center justify-center transition-all duration-300">
+                <img id="profileAvatarImg" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                <i id="profileAvatarPlaceholder" class="fa-solid fa-user text-2xl sm:text-3xl text-slate-400"></i>
+              </div>
+
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-3">
+                  <h2 id="profileNameDisplay" class="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                    NASIR UDDIN
+                  </h2>
+                </div>
+                <p id="profileDesignationDisplay" class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  JUNIOR ASSOCIATE
+                </p>
+              </div>
+            </div>
+
+            <!-- Metadata Chips -->
+            <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto pt-1 sm:pt-4">
+              <div class="meta-chip-box bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md px-3 py-1.5 rounded-xl flex items-center gap-2 hover:border-indigo-400 dark:hover:border-indigo-400 cursor-pointer">
+                <i class="fa-solid fa-sitemap text-indigo-500 text-xs"></i>
+                <div class="flex flex-col justify-center">
+                  <p class="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-0.5">TEAM</p>
+                  <p id="profileTeamDisplay" class="text-[11px] font-black text-slate-800 dark:text-slate-200 leading-none">BCBS</p>
+                </div>
+              </div>
+
+              <div class="meta-chip-box bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md px-3 py-1.5 rounded-xl flex items-center gap-2 hover:border-emerald-400 dark:hover:border-emerald-400 cursor-pointer">
+                <i class="fa-solid fa-id-badge text-emerald-500 text-xs"></i>
+                <div class="flex flex-col justify-center">
+                  <p class="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-0.5">ID</p>
+                  <p id="profileIdDisplay" class="text-[11px] font-black text-slate-800 dark:text-slate-200 leading-none">LnG2306R0453</p>
+                </div>
+              </div>
+
+              <div class="meta-chip-box bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md px-3 py-1.5 rounded-xl flex items-center gap-2 hover:border-cyan-400 dark:hover:border-cyan-400 cursor-pointer">
+                <i class="fa-solid fa-calendar-check text-cyan-500 text-xs"></i>
+                <div class="flex flex-col justify-center">
+                  <p class="text-[8px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-0.5">JOINED & TENURE</p>
+                  <div class="flex items-baseline gap-1 leading-none">
+                    <p id="profileTenureDisplay" class="text-[11px] font-black text-indigo-500 dark:text-indigo-400"></p>
+                    <p id="profileJoinedDisplay" class="text-[9px] font-bold text-slate-500 dark:text-slate-400">06/19/2023</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT BOX: Workplace Hub Custom Widget Box -->
+      <section class="lg:col-span-1 glass-panel rounded-3xl p-3 shadow-lg border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-2 relative overflow-hidden">
+        
+        <div class="flex items-center justify-between pb-1.5 border-b border-slate-200/60 dark:border-slate-800/60">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            <h3 class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">WORKPLACE HUB</h3>
+          </div>
+          <span class="text-[8px] font-extrabold px-1.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">3 IN 1</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-1.5 my-auto">
+          
+          <!-- Top Motivational Quote Bar -->
+          <div class="px-2.5 py-1 rounded-xl bg-indigo-500/10 dark:bg-indigo-950/40 border border-indigo-500/20 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 overflow-hidden">
+              <i class="fa-solid fa-quote-left text-indigo-500 text-[10px] shrink-0"></i>
+              <p id="miniMotivationalQuote" class="text-[10px] font-extrabold text-indigo-700 dark:text-indigo-300 truncate italic">
+                Focus on being productive instead of busy.
+              </p>
+            </div>
+            <button id="refreshQuoteBtn" type="button" title="Get New Motivational Quote" 
+                    class="text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-300 text-[10px] transition cursor-pointer shrink-0">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+
+          <!-- 1. Live Weather (Baridhara DOHS, Dhaka) -->
+          <div class="px-2.5 py-1.5 rounded-xl bg-slate-500/5 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50 flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-2 overflow-hidden">
+              <i id="miniWeatherIcon" class="fa-solid fa-cloud-sun text-amber-400 text-xs shrink-0"></i>
+              <span id="miniWeatherLocation" class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">Baridhara DOHS • Loading...</span>
+            </div>
+            <span id="miniWeatherTemp" class="text-[11px] font-black text-amber-500 shrink-0">--°C</span>
+          </div>
+
+          <!-- 2. SMART HYDRATION TRACKER WITH LIQUID WAVE, WEATHER-SYNC GOAL & SIP TIMER -->
+          <div id="smartHydrationCard" class="relative overflow-hidden px-2.5 py-1.5 rounded-xl bg-cyan-500/5 dark:bg-cyan-950/30 border border-cyan-500/25 flex flex-col gap-1 shadow-xs transition-all duration-300">
+            <!-- Animated Liquid Wave Background Fill -->
+            <div id="waterLiquidBg" class="liquid-wave-fill absolute inset-y-0 left-0 pointer-events-none z-0" style="width: 37.5%;"></div>
+
+            <div class="relative z-10 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <div id="waterIconBox" class="w-5 h-5 rounded-md bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-[10px] shrink-0">
+                  <i class="fa-solid fa-glass-water"></i>
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1">
+                    <span class="text-[11px] font-black text-slate-800 dark:text-slate-100 leading-none whitespace-nowrap"><span id="waterGlassCount">3</span>/<span id="waterTargetCount">8</span> Water</span>
+                    <span id="waterPctText" class="text-[8px] font-black px-1 py-0.5 rounded bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 leading-none">38%</span>
+                    <span id="waterStreakBadge" class="text-[8px] font-black px-1 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-300 leading-none" title="Daily Hydration Streak">🔥 1d</span>
+                  </div>
+                  <div class="flex items-center gap-1 mt-0.5 truncate">
+                    <span id="waterStatusMsg" class="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-none truncate">Stay Hydrated!</span>
+                    <span class="text-[8px] text-slate-400">•</span>
+                    <span id="nextSipTimerText" class="text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 leading-none shrink-0"><i class="fa-regular fa-clock text-[8px] mr-0.5"></i>45m</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Controls (- / +) -->
+              <div class="flex items-center gap-1 shrink-0">
+                <button id="removeWaterBtn" type="button" title="Decrease Glass"
+                        class="w-5 h-5 rounded-md bg-white/80 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-black flex items-center justify-center transition cursor-pointer border border-slate-300 dark:border-slate-700">
+                  -
+                </button>
+                <button id="addWaterBtn" type="button" title="Log Glass"
+                        class="px-2 py-0.5 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white text-[9px] font-black uppercase tracking-wider transition cursor-pointer shadow-xs flex items-center gap-0.5">
+                  <i class="fa-solid fa-plus text-[8px]"></i>
+                  <span>DRINK</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Interactive Drop-Dots -->
+            <div id="waterDropDotsContainer" class="relative z-10 flex items-center justify-between gap-1 pt-0.5">
+            </div>
+          </div>
+
+          <!-- 3. Sticky Note Box -->
+          <div class="px-2.5 py-1.5 rounded-xl bg-slate-500/5 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50 flex items-center justify-between gap-2 shadow-xs">
+            <div class="flex items-center gap-2 overflow-hidden flex-1">
+              <i class="fa-solid fa-note-sticky text-indigo-500 text-xs shrink-0"></i>
+              <input type="text" id="miniStickyInput" placeholder="Write note & press Enter..." 
+                     class="w-full bg-transparent text-[11px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none placeholder-slate-400 border-0 p-0 leading-none">
+            </div>
+            <button id="viewAllNotesBtn" type="button" title="View Saved Notes (Password Protected)" 
+                    class="px-2 py-0.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 text-[9px] font-black uppercase transition cursor-pointer border border-indigo-500/30 shrink-0">
+              <i class="fa-solid fa-lock text-[8px] mr-1"></i>Notes
+            </button>
+          </div>
+
+        </div>
+
+        <div class="pt-1 flex items-center justify-between text-[8px] font-bold text-slate-400 uppercase tracking-wider border-t border-slate-200/40 dark:border-slate-800/40">
+          <span><i class="fa-solid fa-heart-pulse text-rose-500"></i> Active</span>
+          <span class="text-indigo-500 font-extrabold">COMPACT</span>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================= 2. METRICS DASHBOARD ================= -->
+    <section id="interactiveDashboard" class="dashboard-interactive-panel rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 text-slate-900 dark:text-white relative">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-[#1e1b4b]/80 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-300 text-[11px] font-black tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
+            <span>VERIFIED DUTY METRICS</span>
+          </div>
+
+          <h2 id="dashCycleMonthTitle" class="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+            November 2026
+          </h2>
+        </div>
+
+        <div class="flex items-center gap-6 md:justify-end">
+          <div class="relative w-20 h-20 donut-chart rounded-full flex items-center justify-center shrink-0 shadow-xl" id="attendanceDonut">
+            <div class="w-14 h-14 bg-white dark:bg-[#090e1a] rounded-full flex items-center justify-center shadow-inner">
+              <span class="text-xs font-black text-slate-900 dark:text-white" id="donutPercentage">0%</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col space-y-0.5">
+            <div class="flex items-baseline gap-2">
+              <span id="statNetHours" class="text-5xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                225
+              </span>
+              <span class="text-2xl font-black text-cyan-600 dark:text-cyan-400">HRS</span>
+            </div>
+            <p class="text-[11px] font-black tracking-widest text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5 uppercase pt-1">
+              <i class="fa-solid fa-bolt text-amber-500 dark:text-amber-400 text-xs"></i>
+              <span>TOTAL NET WORKLOAD</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Sub-Metrics Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 relative z-10 pt-1">
+        <div class="sub-card-box theme-present rounded-2xl py-3.5 px-4 space-y-2 cursor-default">
+          <div class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-user-check text-[11px]"></i>
+            <span>PRESENT DAYS</span>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <span id="statPresentDays" class="text-2xl font-black text-slate-900 dark:text-white leading-none">25</span>
+            <span class="text-xs font-extrabold text-slate-500" id="statCycleDaysText">/ 30</span>
+          </div>
+          <p id="statCycleDaysSub" class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Total Cycle: 30d</p>
+        </div>
+
+        <div class="sub-card-box theme-weekend rounded-2xl py-3.5 px-4 space-y-2 cursor-default">
+          <div class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center justify-between">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-mug-hot text-[11px]"></i>
+              <span>WEEKENDS</span>
+            </span>
+            <span id="colaBadge" class="text-[9px] font-black px-2 py-0.5 rounded-md border tracking-tight"></span>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <span id="statWeekends" class="text-2xl font-black text-slate-900 dark:text-white leading-none">5</span>
+            <span class="text-xs font-black text-rose-500" id="statAbsentDaysText">0 Abs</span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Holiday Schedule</p>
+        </div>
+
+        <div class="sub-card-box theme-shifts rounded-2xl py-3.5 px-4 space-y-2 cursor-default">
+          <div class="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-briefcase text-[11px]"></i>
+            <span>SHIFTS LOG</span>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <span class="text-xl font-black text-cyan-600 dark:text-cyan-400 leading-none"><span id="statDayShifts">23</span><span class="text-xs font-bold text-slate-400">D</span></span>
+            <span class="text-xl font-black text-purple-600 dark:text-purple-400 leading-none"><span id="statNightShifts">2</span><span class="text-xs font-bold text-slate-400">N</span></span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Day vs Night Shifts</p>
+        </div>
+
+        <div class="sub-card-box theme-grace rounded-2xl py-3.5 px-4 space-y-2 cursor-default">
+          <div class="text-[10px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-[11px]"></i>
+            <span>GRACE DAYS</span>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <span id="statGraceDays" class="text-2xl font-black text-teal-600 dark:text-teal-400 leading-none">0</span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Grace Applied</p>
+        </div>
+
+        <div class="sub-card-box theme-extra rounded-2xl py-3.5 px-4 space-y-2 cursor-default">
+          <div class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock text-[11px]"></i>
+            <span>EXTRA / LATE</span>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <span class="text-xl font-black text-amber-600 dark:text-amber-400 leading-none"><span id="statExtraHours">0</span>h</span>
+            <span class="text-xl font-black text-rose-600 dark:text-rose-400 leading-none"><span id="statLateHours">0</span>h</span>
+          </div>
+          <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400">OT & Late Deductions</p>
+        </div>
+
+        <div class="sub-card-box theme-pay rounded-2xl py-3.5 px-4 space-y-2 cursor-default relative">
+          <div class="flex items-center justify-between">
+            <div class="text-[10px] font-black uppercase tracking-wider text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-sack-dollar text-[11px]"></i>
+              <span>EST. PAY</span>
+            </div>
+            <button id="openRatesBtn" type="button" 
+                    class="no-print text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-gear text-[9px]"></i>
+              <span>Rates</span>
+            </button>
+          </div>
+          <div id="statEstimatedPay" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 leading-none">
+            $0.00
+          </div>
+          <p id="paySubtext" class="text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">Std: $0/h | OT: $0/h</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= 3. PUBLIC HOLIDAY INSIGHTS ================= -->
+    <section id="upcomingHolidaySection" class="glass-panel rounded-3xl p-4 sm:p-5 shadow-lg border border-slate-800 relative overflow-hidden transition-all duration-300">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-lg shrink-0 shadow-sm">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <div class="space-y-0.5">
+            <h4 class="text-[11px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-2">
+              <span>BD PUBLIC HOLIDAYS INSIGHT</span>
+            </h4>
+            <p id="holidayInsightsList" class="text-xs font-black text-slate-800 dark:text-slate-100 tracking-tight">
+              Next Upcoming Holidays: Loading official holiday data...
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center shrink-0">
+          <div class="px-4 py-1.5 rounded-full bg-amber-950/80 border border-amber-600/50 text-amber-200 text-xs font-black tracking-wide shadow-md">
+            <span id="nextHolidayBadgeText">Next: --</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4. ACTIVITY LOGS CARD & TABLE ================= -->
+    <main id="dutyLogsSection" class="glass-panel rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+      
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-lg shrink-0">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h3 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">Activity Logs</h3>
+            <p id="cycleDisplaySubtitle" class="text-xs font-semibold text-slate-400">26/10/2026 to 25/11/2026</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <!-- Combined Month & Year Dropdown -->
+          <div class="glass-card custom-date-dropdown flex items-center px-4 py-1.5 rounded-full shadow-xs space-x-2 text-xs font-bold border border-slate-200/80 dark:border-slate-700/80">
+            <span class="text-indigo-500 font-extrabold uppercase text-[10px] tracking-wider">PERIOD:</span>
+            <select id="periodCombinedSelect" class="bg-transparent font-black text-slate-800 dark:text-slate-100 focus:outline-none cursor-pointer appearance-none pr-1">
+            </select>
+            <i class="fa-solid fa-chevron-down text-[10px] text-indigo-500"></i>
+          </div>
+
+          <!-- Direct 1-Click Action Icon Buttons for CSV & PDF Export -->
+          <div class="flex items-center gap-2 no-print">
+            <button id="directExportCsvBtn" type="button" title="Export CSV Sheet"
+                    class="w-9 h-9 rounded-2xl glass-card hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition cursor-pointer shadow-xs border border-emerald-500/30">
+              <i class="fa-solid fa-file-csv text-base"></i>
+            </button>
+            <button id="directExportPdfBtn" type="button" title="Print to PDF"
+                    class="w-9 h-9 rounded-2xl glass-card hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center transition cursor-pointer shadow-xs border border-rose-500/30">
+              <i id="pdfIcon" class="fa-solid fa-file-pdf text-base"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Table -->
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/80">
+                <th class="py-3 px-4">DATE</th>
+                <th class="py-3 px-3">DAY</th>
+                <th class="py-3 px-4 text-center min-w-[150px]">STATUS</th>
+                <th class="py-3 px-3 text-center">HOURS</th>
+                <th class="py-3 px-3 text-center">EXTRA</th>
+                <th class="py-3 px-3 text-center">LATE</th>
+                <th class="py-3 px-3 text-center">EARLY</th>
+                <th class="py-3 px-3 text-center">SHIFT</th>
+                <th class="py-3 px-3 text-center">GRACE</th>
+                <th class="py-3 px-4 min-w-[200px]">NOTE</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody" class="text-xs divide-y divide-slate-200/50 dark:divide-slate-800/50 font-medium">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= 5. SETUP PROFILE MODAL ================= -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
+    <div class="glass-panel w-full max-w-2xl rounded-3xl p-5 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <h4 class="text-base font-black text-slate-900 dark:text-white">Setup Profile</h4>
+        <button id="closeProfileModalBtn" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="mt-3 p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80">
+        <p class="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Live Photo Preview</p>
+        <div class="relative h-16 w-full rounded-xl overflow-hidden bg-slate-900 bg-cover bg-center border border-slate-300 dark:border-slate-700" id="previewCoverBox">
+          <div class="absolute bottom-1.5 left-3 flex items-center gap-2 z-10">
+            <div class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 overflow-hidden bg-slate-800 flex items-center justify-center shadow-md shrink-0">
+              <img id="previewAvatarImg" src="" class="w-full h-full object-cover hidden" alt="Preview">
+              <i id="previewAvatarPlaceholder" class="fa-solid fa-user text-xs text-slate-400"></i>
+            </div>
+            <span class="text-xs font-bold text-white drop-shadow-md">Avatar & Cover Preview</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="profileForm" class="space-y-3 pt-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">1. NAME</label>
+            <input type="text" id="modalInputName" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">2. DESIGNATION</label>
+            <input type="text" id="modalInputDesignation" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">3. TEAM</label>
+            <input type="text" id="modalInputTeam" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">4. EMPLOYEE ID</label>
+            <input type="text" id="modalInputId" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">5. JOINED DATE</label>
+            <input type="date" id="modalInputJoined" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+            <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500 mb-1">6. LOCATION / CITY</label>
+            <input type="text" id="modalInputLocation" placeholder="e.g. Dhaka, Bangladesh" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500">7. AVATAR IMAGE</label>
+              <button type="button" id="randomAvatarBtn" class="text-[9px] font-extrabold text-indigo-500 hover:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 px-2 py-0.5 rounded-lg flex items-center gap-1 transition cursor-pointer">
+                <i class="fa-solid fa-dice text-[10px]"></i>
+                <span>Random</span>
+              </button>
+            </div>
+            <input type="file" id="modalInputAvatar" accept="image/*" class="w-full text-[11px] text-slate-600 dark:text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-900 dark:file:text-indigo-300 cursor-pointer">
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="flex items-center justify-between">
+              <label class="block text-[9px] font-extrabold uppercase tracking-wider text-indigo-500">8. COVER IMAGE</label>
+              <button type="button" id="randomCoverBtn" class="text-[9px] font-extrabold text-emerald-500 hover:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-lg flex items-center gap-1 transition cursor-pointer">
+                <i class="fa-solid fa-image text-[10px]"></i>
+                <span>Random</span>
+              </button>
+            </div>
+            <input type="file" id="modalInputCover" accept="image/*" class="w-full text-[11px] text-slate-600 dark:text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-indigo-50 file:text-indigo-600 dark:file:bg-indigo-900 dark:file:text-indigo-300 cursor-pointer">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition cursor-pointer mt-1">
+          Save Profile Data
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 6. PAY RATES MODAL ================= -->
+  <div id="ratesModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
+    <div class="glass-panel w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+        <h4 class="text-base font-black text-slate-900 dark:text-white">Pay Rates Setup</h4>
+        <button id="closeRatesModalBtn" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="ratesForm" class="space-y-3 pt-3">
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">CURRENCY SYMBOL</label>
+          <input type="text" id="modalInputCurrency" value="$" class="w-full px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">STANDARD RATE (PER HOUR)</label>
+          <input type="number" step="0.5" id="modalInputStdRate" value="15" class="w-full px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">OVERTIME RATE (PER HOUR)</label>
+          <input type="number" step="0.5" id="modalInputOtRate" value="22.5" class="w-full px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 focus:outline-none">
+        </div>
+        <button type="submit" class="w-full py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition cursor-pointer">
+          Update Rates
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 7. SAVED STICKY NOTES VAULT MODAL ================= -->
+  <div id="notesVaultModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-overlay">
+    <div class="glass-panel w-full max-w-md rounded-3xl p-5 shadow-2xl border border-indigo-200 dark:border-indigo-900/50 relative">
+      
+      <!-- Password Prompt View -->
+      <div id="notesAuthContainer" class="space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+          <h4 id="notesAuthTitle" class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-indigo-500"></i>
+            <span>Protected Notes Vault</span>
+          </h4>
+          <button id="closeNotesVaultBtn" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-base">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <p id="notesAuthSubtext" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+          Enter your security password to view saved sticky notes.
+        </p>
+
+        <form id="notesAuthForm" class="space-y-3">
+          <input type="password" id="notesVaultPasswordInput" placeholder="Enter Password" 
+                 class="w-full px-3.5 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+          
+          <p id="notesAuthError" class="text-[10px] font-bold text-rose-500 hidden"></p>
+
+          <button type="submit" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-md transition cursor-pointer">
+            Unlock Vault
+          </button>
+        </form>
+      </div>
+
+      <!-- Notes List View -->
+      <div id="notesContentContainer" class="space-y-3 hidden">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+          <h4 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-box-archive text-indigo-500"></i>
+            <span>All Saved Notes</span>
+          </h4>
+          <div class="flex items-center gap-2">
+            <button id="changeNotesPassBtn" type="button" title="Change Security Password" 
+                    class="text-[10px] font-bold text-indigo-500 hover:underline flex items-center gap-1">
+              <i class="fa-solid fa-key"></i> Pass
+            </button>
+            <button id="closeNotesListBtn" type="button" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-base">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Change Password Sub-Panel -->
+        <div id="changePassPanel" class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 space-y-2 hidden">
+          <p class="text-[10px] font-extrabold text-indigo-600 dark:text-indigo-300 uppercase tracking-wider">Set New Security Password</p>
+          <div class="flex items-center gap-2">
+            <input type="password" id="newNotesPassInput" placeholder="New Password" 
+                   class="w-full px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 focus:outline-none">
+            <button id="saveNewPassBtn" type="button" 
+                    class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold uppercase shrink-0">
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div id="savedNotesList" class="max-h-60 overflow-y-auto space-y-2 pr-1">
+        </div>
+
+        <div class="pt-2 flex justify-between items-center text-[10px] text-slate-400 border-t border-slate-200 dark:border-slate-800">
+          <span id="notesCountText">Total Notes: 0</span>
+          <button id="clearAllNotesBtn" type="button" class="text-rose-500 hover:underline font-bold">Clear All</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 8. APPLICATION SCRIPT ================= -->
+  <script>
+    // Status Flow Mapping
+    const STATUS_FLOW = [
+      { key: 'BLANK', label: '', badgeBg: 'bg-transparent border border-dashed border-slate-400 dark:border-slate-600 text-transparent', hours: null },
+      { key: 'PRESENT', label: 'PRESENT', badgeBg: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600', hours: 9 },
+      { key: 'ABSENT', label: 'ABSENT', badgeBg: 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-600', hours: null },
+      { key: 'WEEKEND', label: 'WEEKEND', badgeBg: 'bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-600', hours: null },
+      { key: 'HOLIDAY', label: 'HOLIDAY', badgeBg: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600', hours: 13.5 },
+      { key: 'FESTIVAL_DUTY', label: 'FESTIVAL DUTY', badgeBg: 'bg-teal-100 dark:bg-teal-950/80 text-teal-800 dark:text-teal-300 border border-teal-300 dark:border-teal-600', hours: 18 },
+      { key: 'FESTIVAL', label: 'FESTIVAL', badgeBg: 'bg-sky-100 dark:bg-sky-950/80 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-600', hours: 9 }
+    ];
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const fullMonthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const StorageSafe = {
+      get(key) {
+        try { return localStorage.getItem(key); } catch (e) { return null; }
+      },
+      set(key, val) {
+        try { localStorage.setItem(key, val); return true; } catch (e) { return false; }
+      }
+    };
+
+    let currentLogs = [];
+    let clickTimers = {};
+
+    let userProfile = {
+      name: 'NASIR UDDIN',
+      designation: 'JUNIOR ASSOCIATE',
+      team: 'BCBS',
+      id: 'LnG2306R0453',
+      joined: '2023-06-19',
+      location: 'Dhaka, Bangladesh',
+      avatarUrl: '',
+      coverUrl: ''
+    };
+
+    let payConfig = {
+      currency: '$',
+      stdRate: 15,
+      otRate: 22.5
+    };
+
+    function initTheme() {
+      const storedTheme = StorageSafe.get('theme_preference');
+      let isDark = storedTheme ? storedTheme === 'dark' : false;
+      applyTheme(isDark);
+
+      const toggleBtn = document.getElementById('themeToggleBtn');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          isDark = !document.documentElement.classList.contains('dark');
+          StorageSafe.set('theme_preference', isDark ? 'dark' : 'light');
+          applyTheme(isDark);
+        });
+      }
+    }
+
+    function applyTheme(isDark) {
+      document.documentElement.classList.toggle('dark', isDark);
+      document.body.classList.toggle('dark', isDark);
+      document.body.classList.toggle('light-theme', !isDark);
+      updateThemeDisplay(isDark);
+    }
+
+    function updateThemeDisplay(isDark) {
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (icon && label) {
+        icon.innerHTML = isDark ? '<i class="fa-solid fa-moon text-indigo-400"></i>' : '<i class="fa-solid fa-sun text-amber-500"></i>';
+        label.textContent = isDark ? 'Dark' : 'Day';
+      }
+    }
+
+    function getTenureString(dateStr) {
+      if (!dateStr) return '';
+      const start = new Date(dateStr);
+      const end = new Date();
+      if (isNaN(start.getTime())) return '';
+
+      let years = end.getFullYear() - start.getFullYear();
+      let months = end.getMonth() - start.getMonth();
+      let days = end.getDate() - start.getDate();
+
+      if (days < 0) {
+        months--;
+        const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      if (years < 0) return '';
+
+      let parts = [];
+      if (years > 0) parts.push(years + 'y');
+      if (months > 0) parts.push(months + 'm');
+      if (days > 0) parts.push(days + 'd');
+      
+      return parts.length ? parts.join(' ') : '0d';
+    }
+
+    function loadProfile() {
+      const stored = StorageSafe.get('monthly_duty_profile');
+      if (stored) {
+        try { userProfile = Object.assign(userProfile, JSON.parse(stored)); } catch (e) {}
+      }
+      renderProfileUI();
+    }
+
+    function renderProfileUI() {
+      document.getElementById('profileNameDisplay').textContent = userProfile.name || 'EMPLOYEE NAME';
+      document.getElementById('profileDesignationDisplay').textContent = userProfile.designation || 'DESIGNATION';
+      document.getElementById('profileTeamDisplay').textContent = userProfile.team || 'TEAM';
+      document.getElementById('profileIdDisplay').textContent = userProfile.id || 'ID';
+
+      const dateStr = userProfile.joined || '';
+      let displayDate = dateStr;
+      if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) displayDate = parts[1] + '/' + parts[2] + '/' + parts[0];
+      }
+      document.getElementById('profileJoinedDisplay').textContent = displayDate;
+
+      const tenureEl = document.getElementById('profileTenureDisplay');
+      if (tenureEl) {
+        const tenure = getTenureString(dateStr);
+        tenureEl.textContent = tenure ? `(${tenure})` : '';
+      }
+
+      const avatarImg = document.getElementById('profileAvatarImg');
+      const avatarPlaceholder = document.getElementById('profileAvatarPlaceholder');
+
+      if (userProfile.avatarUrl) {
+        avatarImg.src = userProfile.avatarUrl;
+        avatarImg.classList.remove('hidden');
+        if (avatarPlaceholder) avatarPlaceholder.classList.add('hidden');
+      } else {
+        avatarImg.src = '';
+        avatarImg.classList.add('hidden');
+        if (avatarPlaceholder) avatarPlaceholder.classList.remove('hidden');
+      }
+
+      if (userProfile.coverUrl) {
+        document.getElementById('coverBannerBg').style.backgroundImage = 'url("' + userProfile.coverUrl + '")';
+      }
+
+      fetchLiveWeather(userProfile.location || 'Baridhara DOHS, Dhaka');
+    }
+
+    function fetchLiveWeather(locationQuery) {
+      const locEl = document.getElementById('miniWeatherLocation');
+      const tempEl = document.getElementById('miniWeatherTemp');
+      const iconEl = document.getElementById('miniWeatherIcon');
+      if (!locEl || !tempEl) return;
+
+      const lat = 23.8118;
+      const lon = 90.4137;
+      const timestamp = new Date().getTime();
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=Asia%2FDhaka&_=${timestamp}`, {
+          signal: controller.signal
+        })
+          .then(res => {
+            clearTimeout(timeoutId);
+            if (!res || !res.ok) return null;
+            return res.json().catch(() => null);
+          })
+          .then(wData => {
+            if (wData && wData.current_weather) {
+              const temp = Math.round(wData.current_weather.temperature);
+              const code = wData.current_weather.weathercode;
+
+              let condition = 'Partly Cloudy';
+              let iconClass = 'fa-solid fa-cloud-sun text-amber-400';
+
+              if (code === 0) { condition = 'Clear Sky'; iconClass = 'fa-solid fa-sun text-amber-400'; }
+              else if (code >= 1 && code <= 3) { condition = 'Partly Cloudy'; iconClass = 'fa-solid fa-cloud-sun text-amber-400'; }
+              else if (code >= 45 && code <= 48) { condition = 'Foggy'; iconClass = 'fa-solid fa-smog text-slate-400'; }
+              else if (code >= 51 && code <= 67) { condition = 'Rain'; iconClass = 'fa-solid fa-cloud-rain text-blue-400'; }
+              else if (code >= 80 && code <= 82) { condition = 'Showers'; iconClass = 'fa-solid fa-cloud-showers-heavy text-indigo-400'; }
+              else if (code >= 95) { condition = 'Thunderstorm'; iconClass = 'fa-solid fa-bolt text-yellow-400'; }
+
+              locEl.textContent = `Baridhara DOHS • ${condition}`;
+              tempEl.textContent = `${temp}°C`;
+              if (iconEl) iconEl.className = `${iconClass} text-xs shrink-0`;
+
+              if (typeof window.syncHydrationWeatherTemp === 'function') {
+                window.syncHydrationWeatherTemp(temp);
+              }
+            }
+          })
+          .catch(() => {
+            clearTimeout(timeoutId);
+          });
+      } catch (e) {}
+    }
+
+    function setupProfileModal() {
+      const modal = document.getElementById('profileModal');
+      const openBtn = document.getElementById('openProfileModalBtn');
+      const closeBtn = document.getElementById('closeProfileModalBtn');
+      const form = document.getElementById('profileForm');
+      const randomAvatarBtn = document.getElementById('randomAvatarBtn');
+      const randomCoverBtn = document.getElementById('randomCoverBtn');
+
+      const previewAvatarImg = document.getElementById('previewAvatarImg');
+      const previewAvatarPlaceholder = document.getElementById('previewAvatarPlaceholder');
+      const previewCoverBox = document.getElementById('previewCoverBox');
+
+      const avatarInput = document.getElementById('modalInputAvatar');
+      const coverInput = document.getElementById('modalInputCover');
+
+      let tempAvatarUrl = '';
+      let tempCoverUrl = '';
+
+      const getRandomAvatar = () => {
+        const styles = ['adventurer', 'avataaars', 'bottts', 'fun-emoji', 'lorelei', 'micah', 'personas'];
+        const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+        const randomSeed = Math.random().toString(36).substring(7);
+        return `https://api.dicebear.com/7.x/${randomStyle}/svg?seed=${randomSeed}`;
+      };
+
+      const getRandomCover = () => {
+        const photoUrls = [
+          'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
+        ];
+        return photoUrls[Math.floor(Math.random() * photoUrls.length)];
+      };
+
+      function updatePreview() {
+        const currentAvatar = tempAvatarUrl || userProfile.avatarUrl;
+        if (previewAvatarImg) {
+          if (currentAvatar) {
+            previewAvatarImg.src = currentAvatar;
+            previewAvatarImg.classList.remove('hidden');
+            if (previewAvatarPlaceholder) previewAvatarPlaceholder.classList.add('hidden');
+          } else {
+            previewAvatarImg.src = '';
+            previewAvatarImg.classList.add('hidden');
+            if (previewAvatarPlaceholder) previewAvatarPlaceholder.classList.remove('hidden');
+          }
+        }
+        if (previewCoverBox) {
+          const coverSrc = tempCoverUrl || userProfile.coverUrl;
+          previewCoverBox.style.backgroundImage = coverSrc ? `url("${coverSrc}")` : 'none';
+        }
+      }
+
+      if (randomAvatarBtn) {
+        randomAvatarBtn.addEventListener('click', () => {
+          tempAvatarUrl = getRandomAvatar();
+          updatePreview();
+        });
+      }
+
+      if (randomCoverBtn) {
+        randomCoverBtn.addEventListener('click', () => {
+          tempCoverUrl = getRandomCover();
+          updatePreview();
+        });
+      }
+
+      if (avatarInput) {
+        avatarInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) {
+            const r = new FileReader();
+            r.onload = (evt) => {
+              tempAvatarUrl = evt.target.result;
+              updatePreview();
+            };
+            r.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (coverInput) {
+        coverInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) {
+            const r = new FileReader();
+            r.onload = (evt) => {
+              tempCoverUrl = evt.target.result;
+              updatePreview();
+            };
+            r.readAsDataURL(file);
+          }
+        });
+      }
+
+      openBtn.addEventListener('click', () => {
+        document.getElementById('modalInputName').value = userProfile.name;
+        document.getElementById('modalInputDesignation').value = userProfile.designation;
+        document.getElementById('modalInputTeam').value = userProfile.team;
+        document.getElementById('modalInputId').value = userProfile.id;
+        document.getElementById('modalInputJoined').value = userProfile.joined;
+        document.getElementById('modalInputLocation').value = userProfile.location || '';
+        tempAvatarUrl = userProfile.avatarUrl || '';
+        tempCoverUrl = userProfile.coverUrl || '';
+        updatePreview();
+        modal.classList.remove('hidden');
+      });
+
+      closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        userProfile.name = document.getElementById('modalInputName').value.trim();
+        userProfile.designation = document.getElementById('modalInputDesignation').value.trim();
+        userProfile.team = document.getElementById('modalInputTeam').value.trim();
+        userProfile.id = document.getElementById('modalInputId').value.trim();
+        userProfile.joined = document.getElementById('modalInputJoined').value;
+        userProfile.location = document.getElementById('modalInputLocation').value.trim();
+
+        if (tempAvatarUrl) userProfile.avatarUrl = tempAvatarUrl;
+        if (tempCoverUrl) userProfile.coverUrl = tempCoverUrl;
+
+        StorageSafe.set('monthly_duty_profile', JSON.stringify(userProfile));
+        renderProfileUI();
+        modal.classList.add('hidden');
+      });
+    }
+
+    function loadPayRates() {
+      const stored = StorageSafe.get('monthly_duty_payrates');
+      if (stored) {
+        try { payConfig = Object.assign(payConfig, JSON.parse(stored)); } catch (e) {}
+      }
+    }
+
+    function setupRatesModal() {
+      const modal = document.getElementById('ratesModal');
+      const openBtn = document.getElementById('openRatesBtn');
+      const closeBtn = document.getElementById('closeRatesModalBtn');
+      const form = document.getElementById('ratesForm');
+
+      openBtn.addEventListener('click', () => {
+        document.getElementById('modalInputCurrency').value = payConfig.currency;
+        document.getElementById('modalInputStdRate').value = payConfig.stdRate;
+        document.getElementById('modalInputOtRate').value = payConfig.otRate;
+        modal.classList.remove('hidden');
+      });
+
+      closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        payConfig.currency = document.getElementById('modalInputCurrency').value.trim() || '$';
+        payConfig.stdRate = parseFloat(document.getElementById('modalInputStdRate').value) || 0;
+        payConfig.otRate = parseFloat(document.getElementById('modalInputOtRate').value) || 0;
+        StorageSafe.set('monthly_duty_payrates', JSON.stringify(payConfig));
+        modal.classList.add('hidden');
+        updateDashboard();
+      });
+    }
+
+    function setupDirectExportButtons() {
+      const csvBtn = document.getElementById('directExportCsvBtn');
+      const pdfBtn = document.getElementById('directExportPdfBtn');
+
+      if (csvBtn) {
+        csvBtn.addEventListener('click', () => exportCsvFile());
+      }
+
+      if (pdfBtn) {
+        pdfBtn.addEventListener('click', () => {
+          const pdfIcon = document.getElementById('pdfIcon');
+          if (pdfIcon) pdfIcon.className = 'fa-solid fa-spinner fa-spin text-base';
+
+          const element = document.getElementById('mainAppContainer');
+          const select = document.getElementById('periodCombinedSelect');
+          const selectedText = select ? select.options[select.selectedIndex].text : 'Report';
+          const safeProfileName = (userProfile.name || 'Employee').replace(/[^a-zA-Z0-9]/g, '_');
+          const smartFileName = `${safeProfileName}_Duty_Sheet_${selectedText.replace(/\s+/g, '_')}.pdf`;
+
+          const opt = {
+            margin:       [0.3, 0.3, 0.3, 0.3],
+            filename:     smartFileName,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { 
+              scale: 2, 
+              useCORS: true, 
+              logging: false,
+              scrollY: 0,
+              windowWidth: document.documentElement.offsetWidth
+            },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+          };
+
+          html2pdf().set(opt).from(element).save().then(() => {
+            if (pdfIcon) pdfIcon.className = 'fa-solid fa-file-pdf text-base';
+          }).catch(err => {
+            if (pdfIcon) pdfIcon.className = 'fa-solid fa-file-pdf text-base';
+          });
+        });
+      }
+    }
+
+    function buildCycleData() {
+      const periodSelect = document.getElementById('periodCombinedSelect');
+      if (!periodSelect || !periodSelect.value) return;
+
+      const [yearStr, monthStr] = periodSelect.value.split('-');
+      const month = parseInt(monthStr, 10);
+      const year = parseInt(yearStr, 10);
+
+      StorageSafe.set('selected_duty_month', month);
+      StorageSafe.set('selected_duty_year', year);
+
+      const prevMonth = (month === 0) ? 11 : month - 1;
+      const prevYear = (month === 0) ? year - 1 : year;
+
+      const startDate = new Date(prevYear, prevMonth, 26);
+      const endDate = new Date(year, month, 25);
+
+      const pad = (n) => String(n).padStart(2, '0');
+      document.getElementById('cycleDisplaySubtitle').textContent = `${pad(26)}/${pad(prevMonth + 1)}/${prevYear} to ${pad(25)}/${pad(month + 1)}/${year}`;
+
+      const storageKey = 'monthly_duty_logs_' + year + '_' + month;
+      let cached = null;
+      const stored = StorageSafe.get(storageKey);
+      if (stored) {
+        try { cached = JSON.parse(stored); } catch (e) {}
+      }
+
+      currentLogs = [];
+      let cur = new Date(startDate);
+      let dayIndex = 0;
+
+      const bdHolidays = ['02-21', '03-26', '04-14', '05-01', '08-15', '12-16'];
+
+      while (cur <= endDate) {
+        const isSun = (cur.getDay() === 0);
+        const mmdd = pad(cur.getMonth() + 1) + '-' + pad(cur.getDate());
+        const isHoliday = bdHolidays.includes(mmdd);
+        
+        let defaultStatus = 0;
+        if (isHoliday) defaultStatus = 4;
+
+        const defaultRow = {
+          id: dayIndex,
+          dateFormatted: pad(cur.getDate()) + ' ' + monthNames[cur.getMonth()],
+          dayFormatted: dayNames[cur.getDay()],
+          isSunday: isSun,
+          statusIndex: defaultStatus,
+          extra: null,
+          late: null,
+          early: null,
+          shift: 'DAY',
+          grace: '-',
+          note: ''
+        };
+
+        if (cached && cached[dayIndex]) {
+          currentLogs.push(Object.assign(defaultRow, cached[dayIndex]));
+        } else {
+          currentLogs.push(defaultRow);
+        }
+
+        cur.setDate(cur.getDate() + 1);
+        dayIndex++;
+      }
+
+      renderTable();
+      updateDashboard();
+    }
+
+    function applyStatusChange(index, statusIdx) {
+      currentLogs[index].statusIndex = statusIdx;
+      const st = STATUS_FLOW[statusIdx];
+      const hasHours = (st.hours !== null);
+
+      if (hasHours) {
+        if (currentLogs[index].extra === null) currentLogs[index].extra = 0;
+        if (currentLogs[index].late === null) currentLogs[index].late = 0;
+        if (currentLogs[index].early === null) currentLogs[index].early = 0;
+      } else {
+        currentLogs[index].extra = null;
+        currentLogs[index].late = null;
+        currentLogs[index].early = null;
+      }
+
+      if (st.key !== 'BLANK' && st.key !== 'ABSENT' && st.key !== 'WEEKEND') {
+        triggerStatusCelebration(st.key);
+      }
+
+      generateAutoSystemNote(index);
+      saveCurrentMonthLogs();
+      renderTable();
+      updateDashboard();
+    }
+
+    function generateAutoSystemNote(index) {
+      const row = currentLogs[index];
+      const st = STATUS_FLOW[row.statusIndex];
+
+      if (st.key === 'BLANK' || st.key === 'WEEKEND') {
+        if (row.isSunday && st.key !== 'WEEKEND') {
+          row.note = 'Weekend Duty';
+        } else if (st.key === 'WEEKEND') {
+          row.note = '';
+        }
+        return;
+      }
+
+      let parts = [];
+      if (row.shift === 'NIGHT') parts.push('Shift: NIGHT');
+      const ex = Number(row.extra) || 0;
+      if (ex > 0) parts.push(`Extra: ${ex}h`);
+      const lt = Number(row.late) || 0;
+      if (lt > 0) parts.push(`Late: ${lt}h`);
+      const er = Number(row.early) || 0;
+      if (er > 0) parts.push(`Early Exit: ${er}h`);
+      if (row.grace === 'YES') parts.push('Grace: YES');
+      if (row.isSunday && st.key !== 'WEEKEND') parts.push('Weekend Duty');
+
+      const generatedText = parts.join(' | ');
+      row.note = generatedText;
+
+      if (generatedText.trim() !== '') {
+        syncNoteToStickyVault(`${row.dateFormatted}: ${generatedText}`);
+      }
+    }
+
+    function triggerStatusCelebration(statusKey) {
+      const overlay = document.getElementById('celebrationOverlay');
+      const glow = document.getElementById('celebrationGlow');
+      if (!overlay || !glow) return;
+
+      overlay.innerHTML = '';
+      overlay.classList.remove('active');
+      glow.classList.remove('active');
+
+      const VIBE_CONFIG = {
+        'PRESENT': { items: ['🌸', '🌺', '🌼', '✨', '🍃', '⭐', '🌻'], glowGradient: 'radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%)', count: 32 },
+        'HOLIDAY': { items: ['🎈', '🎉', '🎊', '✨', '🥳', '🎁', '⭐'], glowGradient: 'radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, transparent 70%)', count: 36 },
+        'FESTIVAL_DUTY': { items: ['🎆', '✨', '🌟', '🌺', '🎈', '⚡', '💫'], glowGradient: 'radial-gradient(circle, rgba(20, 184, 166, 0.45) 0%, transparent 70%)', count: 40 },
+        'FESTIVAL': { items: ['🎈', '🌸', '🎉', '🥳', '✨', '🎊', '🌺'], glowGradient: 'radial-gradient(circle, rgba(14, 165, 233, 0.45) 0%, transparent 70%)', count: 45 }
+      };
+
+      const config = VIBE_CONFIG[statusKey] || VIBE_CONFIG['PRESENT'];
+
+      glow.style.background = config.glowGradient;
+      glow.classList.add('active');
+      overlay.classList.add('active');
+
+      for (let i = 0; i < config.count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'celebration-particle';
+        particle.textContent = config.items[Math.floor(Math.random() * config.items.length)];
+        
+        const randomDuration = (Math.floor(Math.random() * 3) + 4);
+        const leftPos = Math.random() * 96 + 2;
+        const animDelay = Math.random() * 1.5;
+        const fontSize = Math.random() * 1.8 + 1.2;
+
+        particle.style.left = `${leftPos}%`;
+        particle.style.animationDelay = `${animDelay}s`;
+        particle.style.animationDuration = `${randomDuration}s`;
+        particle.style.fontSize = `${fontSize}rem`;
+
+        overlay.appendChild(particle);
+      }
+
+      setTimeout(() => {
+        overlay.classList.remove('active');
+        glow.classList.remove('active');
+        setTimeout(() => { overlay.innerHTML = ''; }, 600);
+      }, 4000);
+    }
+
+    function cascadeShift(index) {
+      const nextShift = (currentLogs[index].shift === 'DAY') ? 'NIGHT' : 'DAY';
+      for (let i = index; i < currentLogs.length; i++) {
+        currentLogs[i].shift = nextShift;
+        generateAutoSystemNote(i);
+      }
+      saveCurrentMonthLogs();
+      renderTable();
+      updateDashboard();
+    }
+
+    function toggleGrace(index) {
+      currentLogs[index].grace = (currentLogs[index].grace === '-') ? 'YES' : '-';
+      generateAutoSystemNote(index);
+      saveCurrentMonthLogs();
+      renderTable();
+      updateDashboard();
+    }
+
+    function handleStatusClick(index) {
+      if (index < 0 || index >= currentLogs.length) return;
+      
+      if (clickTimers[index]) {
+        clearTimeout(clickTimers[index]);
+        clickTimers[index] = null;
+        applyStatusChange(index, 0);
+        return;
+      }
+
+      clickTimers[index] = setTimeout(() => {
+        clickTimers[index] = null;
+        const currentIdx = currentLogs[index].statusIndex || 0;
+        const nextIdx = (currentIdx + 1) % STATUS_FLOW.length;
+        applyStatusChange(index, nextIdx);
+      }, 250);
+    }
+
+    function saveCurrentMonthLogs() {
+      const periodSelect = document.getElementById('periodCombinedSelect');
+      if (!periodSelect || !periodSelect.value) return;
+      const [yearStr, monthStr] = periodSelect.value.split('-');
+      const storageKey = 'monthly_duty_logs_' + yearStr + '_' + monthStr;
+      StorageSafe.set(storageKey, JSON.stringify(currentLogs));
+    }
+
+    function syncNoteToStickyVault(noteText) {
+      if (!noteText || !noteText.trim()) return;
+      let savedNotes = [];
+      try {
+        savedNotes = JSON.parse(StorageSafe.get('sticky_notes_array') || '[]');
+      } catch(e) { savedNotes = []; }
+
+      const timestamp = new Date().toLocaleString('en-US', { hour12: true, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      
+      if (savedNotes.length > 0 && savedNotes[0].text === noteText) return;
+
+      savedNotes.unshift({
+        id: Date.now(),
+        text: noteText,
+        time: timestamp
+      });
+
+      StorageSafe.set('sticky_notes_array', JSON.stringify(savedNotes));
+    }
+
+    function updateNoteField(index, value) {
+      currentLogs[index].note = value;
+      if (value.trim() !== '') {
+        syncNoteToStickyVault(`${currentLogs[index].dateFormatted}: ${value.trim()}`);
+      }
+      saveCurrentMonthLogs();
+      renderTable();
+    }
+
+    function updateNumericField(index, field, value) {
+      const num = parseFloat(value);
+      currentLogs[index][field] = isNaN(num) ? 0 : Math.max(0, num);
+      generateAutoSystemNote(index);
+      saveCurrentMonthLogs();
+      renderTable();
+      updateDashboard();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('logsTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      currentLogs.forEach((row, idx) => {
+        const st = STATUS_FLOW[row.statusIndex];
+        const isBlank = (st.key === 'BLANK');
+        const isWeekend = (st.key === 'WEEKEND');
+        const isRowLocked = isBlank || isWeekend;
+        const isInputAllowed = st.hours !== null;
+
+        const tr = document.createElement('tr');
+        tr.className = 'table-row-hover transition-colors border-b border-slate-200/50 dark:border-slate-800/50 ' + 
+          (row.isSunday ? 'sunday-row-highlight' : '');
+
+        const tdDate = document.createElement('td');
+        tdDate.className = 'py-2.5 px-4 font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap';
+        tdDate.textContent = row.dateFormatted;
+        tr.appendChild(tdDate);
+
+        const tdDay = document.createElement('td');
+        tdDay.className = 'py-2.5 px-3 font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap';
+        tdDay.textContent = row.dayFormatted;
+        tr.appendChild(tdDay);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.className = 'py-2.5 px-4 text-center';
+        const statusBtn = document.createElement('button');
+        statusBtn.type = 'button';
+        statusBtn.className = 'w-full max-w-[140px] px-3 py-1 rounded-full text-[11px] font-black tracking-wider transition-all duration-200 hover:scale-105 cursor-pointer shadow-xs ' + st.badgeBg;
+        statusBtn.textContent = st.key === 'BLANK' ? 'SELECT' : st.label;
+        statusBtn.onclick = () => handleStatusClick(idx);
+        tdStatus.appendChild(statusBtn);
+        tr.appendChild(tdStatus);
+
+        const tdHours = document.createElement('td');
+        tdHours.className = 'py-2.5 px-3 text-center font-black text-slate-800 dark:text-slate-200';
+        if (st.hours !== null) {
+          const ex = Number(row.extra) || 0;
+          const lt = Number(row.late) || 0;
+          const er = Number(row.early) || 0;
+          const net = st.hours + ex - lt - er;
+          tdHours.textContent = Number.isInteger(net) ? net : net.toFixed(1);
+        } else {
+          tdHours.textContent = '-';
+        }
+        tr.appendChild(tdHours);
+
+        const tdExtra = document.createElement('td');
+        tdExtra.className = 'py-2.5 px-3 text-center';
+        const inputExtra = document.createElement('input');
+        inputExtra.type = 'number';
+        inputExtra.step = '0.5';
+        inputExtra.min = '0';
+        inputExtra.disabled = !isInputAllowed;
+        inputExtra.placeholder = '-';
+        inputExtra.value = (row.extra !== null) ? row.extra : '';
+        inputExtra.className = 'w-12 text-center py-0.5 rounded-lg text-xs font-bold transition-all duration-200 ' + 
+          (isInputAllowed ? 'bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer focus:cursor-text focus:scale-110 focus:ring-2 focus:ring-amber-500' : 'bg-slate-200/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-not-allowed');
+        inputExtra.onchange = (e) => updateNumericField(idx, 'extra', e.target.value);
+        tdExtra.appendChild(inputExtra);
+        tr.appendChild(tdExtra);
+
+        const tdLate = document.createElement('td');
+        tdLate.className = 'py-2.5 px-3 text-center';
+        const inputLate = document.createElement('input');
+        inputLate.type = 'number';
+        inputLate.step = '0.5';
+        inputLate.min = '0';
+        inputLate.disabled = !isInputAllowed;
+        inputLate.placeholder = '-';
+        inputLate.value = (row.late !== null) ? row.late : '';
+        
+        const isLateWarning = isInputAllowed && row.late > 5;
+        inputLate.className = 'w-12 text-center py-0.5 rounded-lg text-xs font-bold transition-all duration-200 ' + 
+          (isInputAllowed ? 
+            (isLateWarning 
+              ? 'bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border-2 border-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.8)] focus:scale-110 focus:ring-2 focus:ring-rose-500 cursor-pointer focus:cursor-text' 
+              : 'bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer focus:cursor-text focus:scale-110 focus:ring-2 focus:ring-rose-500') 
+            : 'bg-slate-200/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-not-allowed');
+        
+        inputLate.onchange = (e) => updateNumericField(idx, 'late', e.target.value);
+        tdLate.appendChild(inputLate);
+        tr.appendChild(tdLate);
+
+        const tdEarly = document.createElement('td');
+        tdEarly.className = 'py-2.5 px-3 text-center';
+        const inputEarly = document.createElement('input');
+        inputEarly.type = 'number';
+        inputEarly.step = '0.5';
+        inputEarly.min = '0';
+        inputEarly.disabled = !isInputAllowed;
+        inputEarly.placeholder = '-';
+        inputEarly.value = (row.early !== null) ? row.early : '';
+        inputEarly.className = 'w-12 text-center py-0.5 rounded-lg text-xs font-bold transition-all duration-200 ' + 
+          (isInputAllowed ? 'bg-slate-100 dark:bg-slate-800 text-orange-600 dark:text-orange-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer focus:cursor-text focus:scale-110 focus:ring-2 focus:ring-orange-500' : 'bg-slate-200/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-not-allowed');
+        inputEarly.onchange = (e) => updateNumericField(idx, 'early', e.target.value);
+        tdEarly.appendChild(inputEarly);
+        tr.appendChild(tdEarly);
+
+        const tdShift = document.createElement('td');
+        tdShift.className = 'py-2.5 px-3 text-center';
+        const hideShift = (st.key === 'BLANK' || st.key === 'ABSENT' || st.key === 'WEEKEND');
+        if (hideShift) {
+          const shiftSpan = document.createElement('span');
+          shiftSpan.className = 'inline-block min-w-[36px] px-2.5 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 text-xs font-black text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700';
+          shiftSpan.textContent = '-';
+          tdShift.appendChild(shiftSpan);
+        } else {
+          const shiftBtn = document.createElement('button');
+          shiftBtn.type = 'button';
+          shiftBtn.disabled = isRowLocked;
+          const isDay = (row.shift === 'DAY');
+          shiftBtn.className = 'px-3 py-1 rounded-lg text-xs font-black transition-all duration-200 tracking-wider hover:brightness-110 hover:shadow-md ' +
+            (isRowLocked 
+              ? 'bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-not-allowed' 
+              : isDay 
+                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300 dark:border-amber-700 hover:scale-110 cursor-pointer'
+                : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-700 hover:scale-110 cursor-pointer');
+          shiftBtn.textContent = row.shift;
+          shiftBtn.onclick = () => cascadeShift(idx);
+          tdShift.appendChild(shiftBtn);
+        }
+        tr.appendChild(tdShift);
+
+        const tdGrace = document.createElement('td');
+        tdGrace.className = 'py-2.5 px-3 text-center';
+        const hideGrace = (st.key === 'BLANK' || st.key === 'ABSENT' || st.key === 'WEEKEND');
+        if (hideGrace) {
+          const graceSpan = document.createElement('span');
+          graceSpan.className = 'inline-block min-w-[36px] px-2.5 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 text-xs font-black text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-not-allowed';
+          graceSpan.textContent = '-';
+          tdGrace.appendChild(graceSpan);
+        } else {
+          const graceBtn = document.createElement('button');
+          graceBtn.type = 'button';
+          graceBtn.className = 'min-w-[36px] px-2.5 py-0.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer hover:scale-110 hover:brightness-110 border ' +
+            (row.grace === 'YES' 
+              ? 'bg-teal-100 text-teal-800 dark:bg-teal-950/80 dark:text-teal-300 font-black border-teal-300 dark:border-teal-700' 
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:text-slate-700 dark:hover:text-slate-200');
+          graceBtn.textContent = row.grace;
+          graceBtn.onclick = () => toggleGrace(idx);
+          tdGrace.appendChild(graceBtn);
+        }
+        tr.appendChild(tdGrace);
+
+        const tdNote = document.createElement('td');
+        tdNote.className = 'py-2.5 px-4';
+        const inputNote = document.createElement('input');
+        inputNote.id = 'note_input_' + idx;
+        inputNote.type = 'text';
+
+        const isNoteDisabled = isBlank || isWeekend;
+        inputNote.disabled = isNoteDisabled;
+        inputNote.value = isNoteDisabled ? '' : (row.note || '');
+        inputNote.placeholder = isNoteDisabled ? 'Select status to write...' : 'Write a note...';
+
+        const isShiftChange = (row.note || '').trim().toLowerCase().includes('shift: night');
+        inputNote.className = 'w-full px-3 py-1.5 rounded-lg text-xs transition-all duration-200 ' + 
+          (isNoteDisabled 
+            ? 'opacity-40 cursor-not-allowed bg-slate-100/50 dark:bg-slate-900/50 border border-slate-200/50 dark:border-slate-800/50 text-slate-400 dark:text-slate-500' 
+            : 'bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700/80 cursor-pointer focus:cursor-text focus:scale-[1.01] hover:shadow-inner focus:shadow-md focus:ring-2 focus:ring-indigo-500') +
+          (isShiftChange ? ' note-shift-highlight' : '');
+        
+        if (!isNoteDisabled) {
+          inputNote.onchange = (e) => updateNoteField(idx, e.target.value);
+        }
+
+        tdNote.appendChild(inputNote);
+        tr.appendChild(tdNote);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateDashboard() {
+      const cycleDays = currentLogs.length;
+      let presentDays = 0;
+      let weekends = 0;
+      let absentDays = 0;
+      let sundayCount = 0;
+      let dayShifts = 0;
+      let nightShifts = 0;
+      let graceDays = 0;
+      let totalExtra = 0;
+      let totalLate = 0;
+      let grandNetHours = 0;
+
+      currentLogs.forEach(row => {
+        const st = STATUS_FLOW[row.statusIndex];
+
+        if (st.key !== 'ABSENT' && st.key !== 'BLANK' && st.key !== 'WEEKEND') {
+          presentDays++;
+        }
+
+        if (st.key === 'WEEKEND') weekends++;
+        if (st.key === 'ABSENT') absentDays++;
+        if (row.isSunday) sundayCount++;
+
+        if (st.hours !== null) {
+          if (row.shift === 'DAY') dayShifts++;
+          if (row.shift === 'NIGHT') nightShifts++;
+        }
+
+        if (row.grace === 'YES') graceDays++;
+
+        if (st.hours !== null) {
+          const ex = Number(row.extra) || 0;
+          const lt = Number(row.late) || 0;
+          const er = Number(row.early) || 0;
+          totalExtra += ex;
+          totalLate += lt;
+          grandNetHours += (st.hours + ex - lt - er);
+        }
+      });
+
+      const periodSelect = document.getElementById('periodCombinedSelect');
+      if (periodSelect && periodSelect.selectedIndex >= 0) {
+        const selectedText = periodSelect.options[periodSelect.selectedIndex].text;
+        const dashTitle = document.getElementById('dashCycleMonthTitle');
+        if (dashTitle) dashTitle.textContent = selectedText;
+      }
+
+      const workingDays = cycleDays - sundayCount;
+
+      const cycleDaysText = document.getElementById('statCycleDaysText');
+      if (cycleDaysText) cycleDaysText.textContent = `/ ${workingDays} Work Days`;
+
+      const absentText = document.getElementById('statAbsentDaysText');
+      if (absentText) absentText.textContent = `${absentDays} Abs`;
+
+      const cycleSubText = document.getElementById('statCycleDaysSub');
+      if (cycleSubText) cycleSubText.textContent = `Total Cycle: ${cycleDays}d (Sundays: ${sundayCount}d)`;
+
+      document.getElementById('statPresentDays').textContent = presentDays;
+      document.getElementById('statWeekends').textContent = weekends;
+      document.getElementById('statDayShifts').textContent = dayShifts;
+      document.getElementById('statNightShifts').textContent = nightShifts;
+      document.getElementById('statGraceDays').textContent = graceDays;
+
+      const colaBadge = document.getElementById('colaBadge');
+      if (colaBadge) {
+        if (absentDays > 4) {
+          colaBadge.textContent = 'COLA Not Eligible';
+          colaBadge.className = 'text-[9px] font-black px-2 py-0.5 rounded-md border tracking-tight bg-rose-500/20 text-rose-400 border-rose-500/40 shadow-xs';
+        } else {
+          colaBadge.textContent = 'COLA Eligible';
+          colaBadge.className = 'text-[9px] font-black px-2 py-0.5 rounded-md border tracking-tight bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-xs';
+        }
+      }
+
+      document.getElementById('statExtraHours').textContent = totalExtra;
+      document.getElementById('statLateHours').textContent = totalLate;
+      document.getElementById('statNetHours').textContent = Number.isInteger(grandNetHours) ? grandNetHours : grandNetHours.toFixed(1);
+
+      const donut = document.getElementById('attendanceDonut');
+      const pct = document.getElementById('donutPercentage');
+      if (donut && pct) {
+        const totalValid = Math.max(1, workingDays);
+        const pDeg = (presentDays / cycleDays) * 360;
+        const wDeg = pDeg + (weekends / cycleDays) * 360;
+        const aDeg = wDeg + (absentDays / cycleDays) * 360;
+
+        donut.style.setProperty('--present-deg', `${pDeg}deg`);
+        donut.style.setProperty('--weekend-deg', `${wDeg}deg`);
+        donut.style.setProperty('--absent-deg', `${aDeg}deg`);
+
+        pct.textContent = Math.round((presentDays / totalValid) * 100) + '%';
+      }
+
+      const basePay = grandNetHours * payConfig.stdRate;
+      const otPay = totalExtra * payConfig.otRate;
+      const totalEarn = basePay + otPay;
+
+      document.getElementById('statEstimatedPay').textContent = payConfig.currency + totalEarn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('paySubtext').textContent = 'Std: ' + payConfig.currency + payConfig.stdRate + '/h | OT: ' + payConfig.currency + payConfig.otRate + '/h';
+    }
+
+    function updateNextPublicHoliday() {
+      const bdHolidaysList = [
+        { name: "Language Martyrs' Day", month: 1, day: 21 },
+        { name: "Children's Day", month: 2, day: 17 },
+        { name: "Independence Day", month: 2, day: 26 },
+        { name: "Bengali New Year", month: 3, day: 14 },
+        { name: "May Day", month: 4, day: 1 },
+        { name: "July Mass Uprising Day", month: 7, day: 5 },
+        { name: "National Mourning Day", month: 7, day: 15 },
+        { name: "Revolution Day", month: 10, day: 7 },
+        { name: "Victory Day", month: 11, day: 16 },
+        { name: "Christmas Day", month: 11, day: 25 }
+      ];
+
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const currentYear = todayStart.getFullYear();
+
+      let upcoming = [];
+
+      for (const h of bdHolidaysList) {
+        const candidate = new Date(currentYear, h.month, h.day);
+        if (candidate >= todayStart) {
+          upcoming.push({ ...h, dateObj: candidate, year: currentYear });
+        }
+      }
+
+      if (upcoming.length < 3) {
+        for (const h of bdHolidaysList) {
+          const candidate = new Date(currentYear + 1, h.month, h.day);
+          upcoming.push({ ...h, dateObj: candidate, year: currentYear + 1 });
+          if (upcoming.length >= 5) break;
+        }
+      }
+
+      const nextThree = upcoming.slice(0, 3);
+      const listEl = document.getElementById('holidayInsightsList');
+      const badgeEl = document.getElementById('nextHolidayBadgeText');
+
+      if (nextThree.length > 0) {
+        const first = nextThree[0];
+        const padDay = String(first.day).padStart(2, '0');
+        const monthShort = monthNames[first.month];
+        
+        if (badgeEl) badgeEl.textContent = `Next: ${padDay} ${monthShort}`;
+
+        const formattedItems = nextThree.map(item => {
+          const d = String(item.day).padStart(2, '0');
+          const m = monthNames[item.month];
+          return `${d} ${m} (${item.name}) (${item.year})`;
+        });
+
+        if (listEl) listEl.textContent = `Next Upcoming Holidays: ${formattedItems.join(' • ')}`;
+      }
+    }
+
+    function exportCsvFile() {
+      let csv = 'Date,Day,Status,Hours,Extra,Late,Early,Shift,Grace,Note\r\n';
+      currentLogs.forEach(row => {
+        const st = STATUS_FLOW[row.statusIndex];
+        let hDisplay = '-';
+        if (st.hours !== null) {
+          const ex = Number(row.extra) || 0;
+          const lt = Number(row.late) || 0;
+          const er = Number(row.early) || 0;
+          hDisplay = st.hours + ex - lt - er;
+        }
+        const hideShift = (st.key === 'BLANK' || st.key === 'ABSENT' || st.key === 'WEEKEND');
+        const line = [
+          '"' + row.dateFormatted + '"',
+          '"' + row.dayFormatted + '"',
+          '"' + (st.key === 'BLANK' ? '' : st.label) + '"',
+          '"' + hDisplay + '"',
+          '"' + (row.extra !== null ? row.extra : '') + '"',
+          '"' + (row.late !== null ? row.late : '') + '"',
+          '"' + (row.early !== null ? row.early : '') + '"',
+          '"' + (hideShift ? '-' : row.shift) + '"',
+          '"' + row.grace + '"',
+          '"' + (row.note || '').replace(/"/g, '""') + '"'
+        ].join(',');
+        csv += line + '\r\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      
+      const safeProfileName = (userProfile.name || 'Employee').replace(/[^a-zA-Z0-9]/g, '_');
+      const periodSelect = document.getElementById('periodCombinedSelect');
+      const selectedPeriodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text.replace(/\s+/g, '_') : 'Duty_Sheet';
+      link.setAttribute('download', `${safeProfileName}_Duty_Sheet_${selectedPeriodText}.csv`);
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function initPeriodDropdown() {
+      const select = document.getElementById('periodCombinedSelect');
+      if (!select) return;
+
+      select.innerHTML = '';
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth();
+
+      const savedMonthStr = StorageSafe.get('selected_duty_month');
+      const savedYearStr = StorageSafe.get('selected_duty_year');
+
+      let targetMonth = (savedMonthStr !== null) ? parseInt(savedMonthStr, 10) : currentMonth;
+      let targetYear = (savedYearStr !== null) ? parseInt(savedYearStr, 10) : currentYear;
+
+      const years = [2024, 2025, 2026, 2027, 2028];
+      
+      years.forEach(yr => {
+        fullMonthNames.forEach((mName, mIdx) => {
+          const option = document.createElement('option');
+          option.value = `${yr}-${mIdx}`;
+          option.textContent = `${mName} ${yr}`;
+          option.className = 'dark:bg-slate-900 font-bold';
+          if (yr === targetYear && mIdx === targetMonth) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+      });
+
+      select.addEventListener('change', buildCycleData);
+    }
+
+    function setupMotivationalQuotes() {
+      const quotes = [
+        "Focus on being productive instead of busy.",
+        "Small steps every day lead to big results.",
+        "Quality work is born from discipline.",
+        "Consistency is what transforms average into excellence.",
+        "Do it with passion or not at all."
+      ];
+      const quoteEl = document.getElementById('miniMotivationalQuote');
+      const refreshBtn = document.getElementById('refreshQuoteBtn');
+
+      function getRandomQuote() {
+        return quotes[Math.floor(Math.random() * quotes.length)];
+      }
+
+      if (refreshBtn && quoteEl) {
+        refreshBtn.addEventListener('click', () => {
+          quoteEl.textContent = getRandomQuote();
+        });
+      }
+    }
+
+    function setupSmartHydrationTracker() {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const savedDate = StorageSafe.get('daily_water_date');
+      let currentGlasses = parseInt(StorageSafe.get('daily_water_count') || '3', 10);
+      let streakDays = parseInt(StorageSafe.get('daily_water_streak') || '1', 10);
+      let streakIncrementedToday = StorageSafe.get('daily_water_streak_done') === todayKey;
+
+      if (savedDate && savedDate !== todayKey) {
+        currentGlasses = 0;
+        streakIncrementedToday = false;
+        StorageSafe.set('daily_water_date', todayKey);
+      } else if (!savedDate) {
+        StorageSafe.set('daily_water_date', todayKey);
+      }
+
+      if (isNaN(currentGlasses) || currentGlasses < 0) currentGlasses = 3;
+      if (isNaN(streakDays) || streakDays < 1) streakDays = 1;
+
+      let targetGlasses = 8;
+      let isHotWeather = false;
+      let sipSecondsLeft = 45 * 60;
+
+      const glassEl = document.getElementById('waterGlassCount');
+      const targetEl = document.getElementById('waterTargetCount');
+      const pctEl = document.getElementById('waterPctText');
+      const msgEl = document.getElementById('waterStatusMsg');
+      const liquidBgEl = document.getElementById('waterLiquidBg');
+      const streakEl = document.getElementById('waterStreakBadge');
+      const sipTimerEl = document.getElementById('nextSipTimerText');
+      const iconBoxEl = document.getElementById('waterIconBox');
+      const dotsContainer = document.getElementById('waterDropDotsContainer');
+      const addBtn = document.getElementById('addWaterBtn');
+      const removeBtn = document.getElementById('removeWaterBtn');
+
+      window.syncHydrationWeatherTemp = function(tempC) {
+        if (typeof tempC === 'number' && tempC >= 30) {
+          targetGlasses = 10;
+          isHotWeather = true;
+        } else {
+          targetGlasses = 8;
+          isHotWeather = false;
+        }
+        updateHydrationUI();
+      };
+
+      function renderDropIndicators() {
+        if (!dotsContainer) return;
+        dotsContainer.innerHTML = '';
+        for (let i = 1; i <= targetGlasses; i++) {
+          const filled = i <= currentGlasses;
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.title = `Set to ${i} Glass${i > 1 ? 'es' : ''}`;
+          dot.className = 'flex-1 h-1.5 rounded-full transition-all duration-300 cursor-pointer ' +
+            (filled
+              ? 'bg-gradient-to-r from-cyan-500 to-teal-400 shadow-xs'
+              : 'bg-slate-200/90 dark:bg-slate-800 hover:bg-cyan-300/60');
+          dot.onclick = () => {
+            const wasBelowGoal = currentGlasses < targetGlasses;
+            currentGlasses = i;
+            sipSecondsLeft = 45 * 60;
+            updateHydrationUI();
+            if (wasBelowGoal && currentGlasses >= targetGlasses) {
+              triggerStatusCelebration('PRESENT');
+            }
+          };
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function updateHydrationUI() {
+        if (glassEl) glassEl.textContent = currentGlasses;
+        if (targetEl) targetEl.textContent = targetGlasses;
+
+        const pct = Math.min(100, Math.round((currentGlasses / targetGlasses) * 100));
+        if (pctEl) pctEl.textContent = `${pct}%`;
+        if (liquidBgEl) liquidBgEl.style.width = `${pct}%`;
+
+        if (currentGlasses >= targetGlasses && !streakIncrementedToday) {
+          streakDays++;
+          streakIncrementedToday = true;
+          StorageSafe.set('daily_water_streak', streakDays.toString());
+          StorageSafe.set('daily_water_streak_done', todayKey);
+        }
+
+        if (streakEl) streakEl.textContent = `🔥 ${streakDays}d`;
+
+        if (msgEl) {
+          if (currentGlasses === 0) {
+            msgEl.textContent = isHotWeather ? 'Hot Day! +2 Goal ☀️' : 'Start with water!';
+          } else if (currentGlasses < Math.ceil(targetGlasses / 2)) {
+            msgEl.textContent = isHotWeather ? 'Hot Boost (+2 Goal)' : 'Keep sipping!';
+          } else if (currentGlasses < targetGlasses) {
+            msgEl.textContent = 'Halfway there! 🎯';
+          } else {
+            msgEl.textContent = 'Goal Met! 🎉';
+          }
+        }
+
+        renderDropIndicators();
+        StorageSafe.set('daily_water_count', currentGlasses.toString());
+        StorageSafe.set('daily_water_date', todayKey);
+      }
+
+      setInterval(() => {
+        if (!sipTimerEl) return;
+        if (sipSecondsLeft > 0) {
+          sipSecondsLeft--;
+          const mins = Math.ceil(sipSecondsLeft / 60);
+          sipTimerEl.innerHTML = `<i class="fa-regular fa-clock text-[8px] mr-0.5"></i>${mins}m`;
+          sipTimerEl.className = 'text-[9px] font-extrabold text-cyan-600 dark:text-cyan-400 leading-none';
+          if (iconBoxEl) iconBoxEl.classList.remove('animate-pulse');
+        } else {
+          sipTimerEl.innerHTML = `<i class="fa-solid fa-bell text-[8px] mr-0.5"></i>Sip Now!`;
+          sipTimerEl.className = 'text-[9px] font-black text-amber-500 leading-none animate-pulse';
+          if (iconBoxEl) iconBoxEl.classList.add('animate-pulse');
+        }
+      }, 1000);
+
+      if (addBtn) {
+        addBtn.addEventListener('click', () => {
+          if (currentGlasses < 15) {
+            const wasBelowGoal = currentGlasses < targetGlasses;
+            currentGlasses++;
+            sipSecondsLeft = 45 * 60;
+            updateHydrationUI();
+            if (wasBelowGoal && currentGlasses >= targetGlasses) {
+              triggerStatusCelebration('PRESENT');
+            }
+          }
+        });
+      }
+
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          if (currentGlasses > 0) {
+            currentGlasses--;
+            updateHydrationUI();
+          }
+        });
+      }
+
+      updateHydrationUI();
+    }
+
+    function setupStickyNotesSystem() {
+      const input = document.getElementById('miniStickyInput');
+      const viewBtn = document.getElementById('viewAllNotesBtn');
+      const vaultModal = document.getElementById('notesVaultModal');
+      const closeVaultBtn = document.getElementById('closeNotesVaultBtn');
+      const closeListBtn = document.getElementById('closeNotesListBtn');
+      const authForm = document.getElementById('notesAuthForm');
+      const passInput = document.getElementById('notesVaultPasswordInput');
+      const authErr = document.getElementById('notesAuthError');
+      const authContainer = document.getElementById('notesAuthContainer');
+      const contentContainer = document.getElementById('notesContentContainer');
+      const clearAllBtn = document.getElementById('clearAllNotesBtn');
+
+      const changePassBtn = document.getElementById('changeNotesPassBtn');
+      const changePassPanel = document.getElementById('changePassPanel');
+      const newPassInput = document.getElementById('newNotesPassInput');
+      const saveNewPassBtn = document.getElementById('saveNewPassBtn');
+
+      function getVaultPassword() {
+        return StorageSafe.get('sticky_notes_password') || '1234';
+      }
+
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && input.value.trim()) {
+            syncNoteToStickyVault(input.value.trim());
+            input.value = '';
+            input.placeholder = 'Note saved to vault!';
+            setTimeout(() => {
+              input.placeholder = 'Write note & press Enter...';
+            }, 2000);
+          }
+        });
+      }
+
+      function renderSavedNotes() {
+        const listContainer = document.getElementById('savedNotesList');
+        const countText = document.getElementById('notesCountText');
+        if (!listContainer) return;
+
+        let notes = [];
+        try {
+          notes = JSON.parse(StorageSafe.get('sticky_notes_array') || '[]');
+        } catch(e) { notes = []; }
+
+        if (countText) countText.textContent = `Total Notes: ${notes.length}`;
+        listContainer.innerHTML = '';
+
+        if (notes.length === 0) {
+          listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4 italic">No notes saved yet.</p>';
+          return;
+        }
+
+        notes.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs flex justify-between items-start gap-2';
+          div.innerHTML = `
+            <div class="space-y-0.5">
+              <p class="font-bold text-slate-800 dark:text-slate-100">${item.text}</p>
+              <p class="text-[9px] text-slate-400 font-semibold">${item.time}</p>
+            </div>
+            <button type="button" class="text-slate-400 hover:text-rose-500 text-xs shrink-0" onclick="deleteSingleNote(${item.id})">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          `;
+          listContainer.appendChild(div);
+        });
+      }
+
+      window.deleteSingleNote = function(id) {
+        let notes = [];
+        try {
+          notes = JSON.parse(StorageSafe.get('sticky_notes_array') || '[]');
+        } catch(e) { notes = []; }
+        notes = notes.filter(n => n.id !== id);
+        StorageSafe.set('sticky_notes_array', JSON.stringify(notes));
+        renderSavedNotes();
+      };
+
+      if (viewBtn && vaultModal) {
+        viewBtn.addEventListener('click', () => {
+          authContainer.classList.remove('hidden');
+          contentContainer.classList.add('hidden');
+          if (changePassPanel) changePassPanel.classList.add('hidden');
+          if (passInput) passInput.value = '';
+          if (authErr) authErr.classList.add('hidden');
+          vaultModal.classList.remove('hidden');
+        });
+      }
+
+      if (closeVaultBtn) closeVaultBtn.addEventListener('click', () => vaultModal.classList.add('hidden'));
+      if (closeListBtn) closeListBtn.addEventListener('click', () => vaultModal.classList.add('hidden'));
+
+      if (authForm) {
+        authForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const enteredPass = passInput ? passInput.value.trim() : '';
+          const savedPass = getVaultPassword();
+
+          if (enteredPass === savedPass) {
+            authContainer.classList.add('hidden');
+            contentContainer.classList.remove('hidden');
+            renderSavedNotes();
+          } else {
+            if (authErr) {
+              authErr.textContent = 'Incorrect Password!';
+              authErr.classList.remove('hidden');
+            }
+          }
+        });
+      }
+
+      if (changePassBtn && changePassPanel) {
+        changePassBtn.addEventListener('click', () => {
+          changePassPanel.classList.toggle('hidden');
+          if (newPassInput) newPassInput.value = '';
+        });
+      }
+
+      if (saveNewPassBtn && newPassInput) {
+        saveNewPassBtn.addEventListener('click', () => {
+          const val = newPassInput.value.trim();
+          if (val.length > 0) {
+            StorageSafe.set('sticky_notes_password', val);
+            alert('Security Password Updated Successfully!');
+            changePassPanel.classList.add('hidden');
+          }
+        });
+      }
+
+      if (clearAllBtn) {
+        clearAllBtn.addEventListener('click', () => {
+          StorageSafe.set('sticky_notes_array', '[]');
+          renderSavedNotes();
+        });
+      }
+    }
+
+    window.onload = function() {
+      initTheme();
+      loadProfile();
+      loadPayRates();
+      setupProfileModal();
+      setupRatesModal();
+      setupDirectExportButtons();
+      setupMotivationalQuotes();
+      setupSmartHydrationTracker();
+      setupStickyNotesSystem();
+      initPeriodDropdown();
+      buildCycleData();
+      updateNextPublicHoliday();
+
+      setInterval(() => {
+        if (userProfile && userProfile.location) {
+          fetchLiveWeather(userProfile.location);
+        }
+      }, 300000);
+    };
+
+    function handleWorkSelect(event, element, labelText) {
+      if (!element) return;
+      const targetUrl = element.getAttribute('data-link') || element.getAttribute('href');
+
+      const options = document.querySelectorAll('.work-option-item');
+      options.forEach(opt => opt.classList.remove('selected-active'));
+      element.classList.add('selected-active');
+
+      const labelEl = document.getElementById('selectedWorkLabel');
+      if (labelEl) labelEl.textContent = labelText;
+
+      if (targetUrl && targetUrl !== '#' && !targetUrl.includes('LINK_')) {
+        event.preventDefault();
+        window.location.href = targetUrl;
+      }
+    }
+  </script>
+</body>
+</html>
