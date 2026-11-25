@@ -49,7 +49,6 @@
     body button:not(.no-sys-style),
     body .meta-chip-box,
     body .custom-date-dropdown,
-    body #workPurposeBtn,
     body #themeToggleBtn {
       border-radius: var(--sys-btn-radius) !important;
       padding-left: var(--sys-btn-px) !important;
@@ -464,24 +463,6 @@
       border-color: rgba(99, 102, 241, 0.6) !important;
     }
 
-    .dropdown-group:hover .dropdown-menu-box {
-      opacity: 1 !important;
-      visibility: visible !important;
-      transform: translateY(0) scale(1) !important;
-    }
-
-    .work-option-item {
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .work-option-item:hover {
-      background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15)) !important;
-      transform: translateX(4px);
-    }
-    .work-option-item.selected-active {
-      background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), rgba(6, 182, 212, 0.2)) !important;
-      border-left: 3px solid #10b981 !important;
-    }
-
     /* Smooth fade transition for rotating weather details & Bangla quotes */
     .hub-smooth-fade {
       transition: opacity 0.35s ease, transform 0.35s ease;
@@ -489,6 +470,18 @@
     .hub-smooth-fade.fading {
       opacity: 0;
       transform: translateY(3px);
+    }
+
+    /* Compact Header Quick-Links Dropdown */
+    .header-quick-dropdown.open .header-quick-menu,
+    .header-quick-dropdown:hover .header-quick-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .header-quick-dropdown.open .quick-chevron,
+    .header-quick-dropdown:hover .quick-chevron {
+      transform: rotate(180deg);
     }
   </style>
 </head>
@@ -517,48 +510,39 @@
         </div>
       </div>
 
-      <!-- CENTER: WORK PURPOSE DROPDOWN -->
-      <div class="relative dropdown-group py-1">
-        <button id="workPurposeBtn" type="button" 
-                class="glass-card flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 border border-indigo-500/40 transition-all duration-200 cursor-pointer shadow-xs hover:bg-slate-200/80 dark:hover:bg-slate-800/80">
-          <i class="fa-solid fa-briefcase text-indigo-500 text-[10px]"></i>
-          <span id="selectedWorkLabel">WORK PURPOSE</span>
-          <i class="fa-solid fa-chevron-down text-[9px] text-indigo-400 transition-transform duration-300 group-hover:rotate-180"></i>
+      <!-- Center: Compact Quick-Links Dropdown Icon -->
+      <div id="headerQuickDropdown" class="header-quick-dropdown relative py-1">
+        <button id="headerQuickLinksBtn" type="button" title="Quick Links" aria-label="Quick Links Menu" aria-expanded="false"
+                class="no-sys-style glass-card w-8 h-8 rounded-full flex items-center justify-center gap-0.5 text-indigo-600 dark:text-indigo-400 border border-indigo-500/35 hover:border-indigo-500 hover:bg-indigo-500/10 hover:scale-105 transition-all duration-200 cursor-pointer shadow-xs">
+          <i class="fa-solid fa-grip text-[11px]"></i>
+          <i class="quick-chevron fa-solid fa-chevron-down text-[7px] transition-transform duration-200"></i>
         </button>
 
-        <!-- Dropdown Menu Box -->
-        <div class="dropdown-menu-box absolute left-1/2 -translate-x-1/2 top-full mt-1 w-56 opacity-0 invisible transition-all duration-300 transform translate-y-2 scale-95 glass-panel rounded-2xl p-2 shadow-2xl border border-indigo-500/30 backdrop-blur-2xl z-50 space-y-1">
-          <div class="px-2.5 py-1 border-b border-slate-200/50 dark:border-slate-800/50 text-[9px] font-black uppercase tracking-widest text-indigo-400">
-            Select Workspace Action
-          </div>
-          
-          <a href="https://nasirbhaiyas.github.io/-portfolio/" data-link="https://nasirbhaiyas.github.io/-portfolio/" onclick="handleWorkSelect(event, this, 'NASIR PORTFOLIO')" 
-             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-[10px] text-indigo-400"></i> NASIR PORTFOLIO</span>
+        <div id="headerQuickLinksMenu"
+             class="header-quick-menu absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-52 opacity-0 invisible translate-y-2 scale-95 transition-all duration-200 glass-panel rounded-2xl p-1.5 shadow-2xl border border-indigo-500/30 backdrop-blur-2xl z-50 space-y-0.5">
+          <a href="https://nasirbhaiyas.github.io/-portfolio/"
+             class="flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-300 transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-globe text-[10px] text-indigo-500"></i> Portfolio</span>
             <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
           </a>
-
-          <a href="https://nasirbhaiyas.github.io/attendance-tracker/" data-link="https://nasirbhaiyas.github.io/attendance-tracker/" onclick="handleWorkSelect(event, this, 'ATTENDANCE TRACKER')" 
-             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-check text-[10px] text-indigo-400"></i> ATTENDANCE TRACKER</span>
+          <a href="https://nasirbhaiyas.github.io/attendance-tracker/"
+             class="flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-300 transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-calendar-check text-[10px] text-emerald-500"></i> Attendance Tracker</span>
             <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
           </a>
-
-          <a href="https://nasirbhaiyas.github.io/TDI/" data-link="https://nasirbhaiyas.github.io/TDI/" onclick="handleWorkSelect(event, this, 'TDI')" 
-             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-[10px] text-indigo-400"></i> TDI</span>
+          <a href="https://nasirbhaiyas.github.io/TDI/"
+             class="flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-300 transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-layer-group text-[10px] text-amber-500"></i> TDI</span>
             <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
           </a>
-
-          <a href="https://nasirbhaiyas.github.io/CHAT-APPS/" data-link="https://nasirbhaiyas.github.io/CHAT-APPS/" onclick="handleWorkSelect(event, this, 'CHAT APPS')" 
-             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-comments text-[10px] text-indigo-400"></i> CHAT APPS</span>
+          <a href="https://nasirbhaiyas.github.io/REPORT-COUNTING/"
+             class="flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-300 transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-chart-column text-[10px] text-cyan-500"></i> Report Counting</span>
             <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
           </a>
-
-          <a href="https://nasirbhaiyas.github.io/REPORT-COUNTING/" data-link="https://nasirbhaiyas.github.io/REPORT-COUNTING/" onclick="handleWorkSelect(event, this, 'REPORT COUNTING')" 
-             class="work-option-item flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="flex items-center gap-2"><i class="fa-solid fa-chart-column text-[10px] text-indigo-400"></i> REPORT COUNTING</span>
+          <a href="https://nasirbhaiyas.github.io/CHAT-APPS/"
+             class="flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-300 transition">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-comments text-[10px] text-purple-500"></i> Chat Apps</span>
             <i class="fa-solid fa-arrow-right text-[9px] text-slate-400"></i>
           </a>
         </div>
@@ -699,7 +683,7 @@
             <div class="flex items-start gap-2 my-auto">
               <i id="quoteMainIcon" class="fa-solid fa-quote-left text-indigo-500/80 dark:text-indigo-400/80 text-xs mt-0.5 shrink-0"></i>
               <p id="miniMotivationalQuote" class="hub-smooth-fade text-[11.5px] sm:text-xs font-bold leading-relaxed text-slate-800 dark:text-slate-100">
-                ব্যস্ত থাকার চেয়ে কার্যকর ও ফলপ্রসূ হওয়ার দিকে মনোযোগ দিন।
+                ব্যস্ত থাকার চেয়ে কার্যকর ও ফলপ্রসূ হওয়ার দিকে মনোযোগ দিন।
               </p>
             </div>
 
@@ -1612,7 +1596,7 @@
           'https://images.pexels.com/photos/15490027/pexels-photo-15490027.jpeg?auto=compress&cs=tinysrgb&w=1000',
           'https://images.pexels.com/photos/38296777/pexels-photo-38296777.jpeg?auto=compress&cs=tinysrgb&w=1000',
           'https://images.pexels.com/photos/36072129/pexels-photo-36072129.jpeg?auto=compress&cs=tinysrgb&w=1000',
-          // Mountains (পাহাড়)
+          // Mountains (পাহাড়)
           'https://images.pexels.com/photos/18233185/pexels-photo-18233185.jpeg?auto=compress&cs=tinysrgb&w=1000',
           'https://images.pexels.com/photos/19793751/pexels-photo-19793751.jpeg?auto=compress&cs=tinysrgb&w=1000',
           'https://images.pexels.com/photos/695244/pexels-photo-695244.jpeg?auto=compress&cs=tinysrgb&w=1000',
@@ -2656,20 +2640,20 @@
     function setupMotivationalQuotes() {
       // Offline / instant-start fallback pool
       const fallbackItems = [
-        { type: 'quote', text: 'ব্যস্ত থাকার চেয়ে কার্যকর ও ফলপ্রসূ হওয়ার দিকে মনোযোগ দিন।', source: 'কর্মক্ষেত্রের অনুপ্রেরণা' },
-        { type: 'hadith', text: 'সর্বোত্তম আমল হলো সেটি, যা নিয়মিত করা হয়—যদিও তা পরিমাণে অল্প হয়।', source: 'সহীহ বুখারী ও মুসলিম' },
-        { type: 'quote', text: 'প্রতিদিনের ছোট ছোট পদক্ষেপই একদিন বড় সাফল্য এনে দেয়।', source: 'দৈনিক অনুপ্রেরণা' },
-        { type: 'hadith', text: 'নিশ্চয়ই প্রতিটি কাজের ফলাফল নিয়তের ওপর নির্ভরশীল।', source: 'সহীহ বুখারী' },
-        { type: 'quote', text: 'ধারাবাহিকতা সাধারণ মানুষকেও অসাধারণ সাফল্যের চূড়ায় পৌঁছে দেয়।', source: 'সাফল্যের মূলমন্ত্র' },
+        { type: 'quote', text: 'ব্যস্ত থাকার চেয়ে কার্যকর ও ফলপ্রসূ হওয়ার দিকে মনোযোগ দিন।', source: 'কর্মক্ষেত্রের অনুপ্রেরণা' },
+        { type: 'hadith', text: 'সর্বোত্তম আমল হলো সেটি, যা নিয়মিত করা হয়—যদিও তা পরিমাণে অল্প হয়।', source: 'সহীহ বুখারী ও মুসলিম' },
+        { type: 'quote', text: 'প্রতিদিনের ছোট ছোট পদক্ষেপই একদিন বড় সাফল্য এনে দেয়।', source: 'দৈনিক অনুপ্রেরণা' },
+        { type: 'hadith', text: 'নিশ্চয়ই প্রতিটি কাজের ফলাফল নিয়তের ওপর নির্ভরশীল।', source: 'সহীহ বুখারী' },
+        { type: 'quote', text: 'ধারাবাহিকতা সাধারণ মানুষকেও অসাধারণ সাফল্যের চূড়ায় পৌঁছে দেয়।', source: 'সাফল্যের মূলমন্ত্র' },
         { type: 'hadith', text: 'মানুষের মধ্যে সেই উত্তম, যে মানুষের বেশি উপকার করে।', source: 'সহীহুল জামে' },
         { type: 'quote', text: 'কাজের মান নির্ভর করে আপনার শৃঙ্খলা ও আন্তরিকতার ওপর।', source: 'পেশাদারিত্ব' },
         { type: 'hadith', text: 'ধৈর্য হলো উজ্জ্বল আলোকবর্তিকা।', source: 'সহীহ মুসলিম' },
-        { type: 'quote', text: 'আজকের পরিশ্রমই আগামী দিনের সুন্দর ভবিষ্যৎ গড়ে তুলবে।', source: 'আত্মবিশ্বাস' },
-        { type: 'hadith', text: 'তোমরা সহজ করো, কঠিন করো না; মানুষকে সুসংবাদ দাও, বিতাড়িত করো না।', source: 'সহীহ বুখারী' },
-        { type: 'quote', text: 'সময়কে সঠিকভাবে কাজে লাগান, সময়ই আপনাকে সফল করবে।', source: 'সময় ব্যবস্থাপনা' },
-        { type: 'hadith', text: 'তোমার ভাইয়ের দিকে হাসিমুখে তাকানোও একটি সদকা।', source: 'জামে তিরমিযী' },
-        { type: 'quote', text: 'কঠিন সময়ে হাল ছেড়ে দেবেন না; প্রতিটি বাধাই নতুন অভিজ্ঞতার দরজা খুলে দেয়।', source: 'ইতিবাচক ভাবনা' },
-        { type: 'hadith', text: 'যে ব্যক্তি হালাল রিজিক অন্বেষণে শ্রম দিয়ে ক্লান্ত হয়ে সন্ধ্যা করে, সে ক্ষমাপ্রাপ্ত অবস্থায় সন্ধ্যা করে।', source: 'আল-হাদিস (তাবারানী)' }
+        { type: 'quote', text: 'আজকের পরিশ্রমই আগামী দিনের সুন্দর ভবিষ্যৎ গড়ে তুলবে।', source: 'আত্মবিশ্বাস' },
+        { type: 'hadith', text: 'তোমরা সহজ করো, কঠিন করো না; মানুষকে সুসংবাদ দাও, বিতাড়িত করো না।', source: 'সহীহ বুখারী' },
+        { type: 'quote', text: 'সময়কে সঠিকভাবে কাজে লাগান, সময়ই আপনাকে সফল করবে।', source: 'সময় ব্যবস্থাপনা' },
+        { type: 'hadith', text: 'তোমার ভাইয়ের দিকে হাসিমুখে তাকানোও একটি সদকা।', source: 'জামে তিরমিযী' },
+        { type: 'quote', text: 'কঠিন সময়ে হাল ছেড়ে দেবেন না; প্রতিটি বাধাই নতুন অভিজ্ঞতার দরজা খুলে দেয়।', source: 'ইতিবাচক ভাবনা' },
+        { type: 'hadith', text: 'যে ব্যক্তি হালাল রিজিক অন্বেষণে শ্রম দিয়ে ক্লান্ত হয়ে সন্ধ্যা করে, সে ক্ষমাপ্রাপ্ত অবস্থায় সন্ধ্যা করে।', source: 'আল-হাদিস (তাবারানী)' }
       ];
 
       const quoteEl = document.getElementById('miniMotivationalQuote');
@@ -2686,12 +2670,12 @@
 
       const topicSeeds = [
         'কর্মক্ষেত্রের শৃঙ্খলা ও উন্নতি',
-        'ধৈর্য, অধ্যবসায় ও আত্মবিশ্বাস',
-        'সময় ব্যবস্থাপনা ও ফোকাস',
+        'ধৈর্য, অধ্যবসায় ও আত্মবিশ্বাস',
+        'সময় ব্যবস্থাপনা ও ফোকাস',
         'সততা, আমানতদারিতা ও হালাল রিজিক',
         'ইতিবাচক মানসিকতা ও কৃতজ্ঞতা',
         'দলগত কাজ, উত্তম চরিত্র ও পরোপকার',
-        'কঠিন সময়ে সাহস ও আল্লাহর ওপর ভরসা'
+        'কঠিন সময়ে সাহস ও আল্লাহর ওপর ভরসা'
       ];
 
       function setRefreshSpin(spinning) {
@@ -2984,27 +2968,35 @@
       });
     }
 
-    function handleWorkSelect(event, element, labelText) {
-      if (!element) return;
-      const targetUrl = element.getAttribute('data-link') || element.getAttribute('href');
+    function setupHeaderQuickLinks() {
+      const container = document.getElementById('headerQuickDropdown');
+      const btn = document.getElementById('headerQuickLinksBtn');
+      if (!container || !btn) return;
 
-      const options = document.querySelectorAll('.work-option-item');
-      options.forEach(opt => opt.classList.remove('selected-active'));
-      element.classList.add('selected-active');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = container.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
 
-      const labelEl = document.getElementById('selectedWorkLabel');
-      if (labelEl) labelEl.textContent = labelText;
+      document.addEventListener('click', (e) => {
+        if (!container.contains(e.target)) {
+          container.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
 
-      if (targetUrl && targetUrl !== '#' && !targetUrl.includes('LINK_')) {
-        event.preventDefault();
-        window.location.href = targetUrl;
-      } else {
-        event.preventDefault();
-      }
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          container.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
     }
 
     window.onload = function() {
       initTheme();
+      setupHeaderQuickLinks();
       loadProfile();
       loadPayRates();
       setupProfileModal();
